@@ -105,6 +105,54 @@ bool ParkingModel::getIsFavorite() const
     return m_isFavorite;
 }
 
+
+void ParkingModel::setId(const QVariant &id)
+{
+    this->m_id = id.toInt();
+}
+
+void ParkingModel::setName(const QVariant &name)
+{
+    this->m_name = name.toString();
+}
+
+void ParkingModel::setLongitude(const QVariant &lng)
+{
+    this->m_lng = lng.toString();
+}
+
+void ParkingModel::setLatitude(const QVariant &lat)
+{
+    this->m_lat = lat.toString();
+}
+
+void ParkingModel::setStatus(const QVariant &status)
+{
+    this->m_status = status.toString();
+}
+
+void ParkingModel::setFree(const QVariant &freep)
+{
+    this->m_free = freep.toInt();
+}
+
+void ParkingModel::setTotal(const QVariant &total)
+{
+    this->m_total = total.toInt();
+}
+
+void ParkingModel::setIsRelay(const QVariant &isRelay)
+{
+    this->m_isRelay = isRelay.toBool();
+}
+
+void ParkingModel::setIsFavorite(const QVariant &isFavorite)
+{
+    this->m_isFavorite = isFavorite.toBool();
+}
+
+
+
 QVariant ParkingModel::data(int role) const
 {
     QVariant r = QVariant();
@@ -154,9 +202,51 @@ QVariant ParkingModel::data(int role) const
 
 bool ParkingModel::setData(const QVariant &value, int role)
 {
-    //FIXME
+    bool r = true;
 
-    emit dataChanged();
+    switch(role)
+    {
+        case IdRole:
+            this->setId(value);
+            break;
 
-    return true;
+        case Qt::DisplayRole:
+        case NameRole:
+            this->setName(value);
+            break;
+
+        case StatusRole:
+            this->setStatus(value);
+            break;
+
+        case FreeRole:
+            this->setFree(value);
+            break;
+
+        case TotalRole:
+            this->setTotal(value);
+            break;
+
+        case LongitudeRole:
+            this->setLongitude(value);
+            break;
+
+        case LatitudeRole:
+            this->setLatitude(value);
+            break;
+
+        case IsRelayRole:
+            this->setIsRelay(value);
+            break;
+
+        case IsFavoriteRole:
+            this->setIsFavorite(value);
+            break;
+
+        default:
+            r = false;
+            break;
+    }
+
+    return r;
 }

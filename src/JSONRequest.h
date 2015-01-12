@@ -15,6 +15,7 @@ class JSONRequest : public QObject
 
     public:
         explicit    JSONRequest(QObject *parent = 0);
+        ~JSONRequest();
         void        request(const QString &url) const;
 
     private:
