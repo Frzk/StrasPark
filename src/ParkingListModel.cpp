@@ -50,7 +50,7 @@ QVariant ParkingListModel::headerData(int section, Qt::Orientation orientation, 
     if(role == Qt::DisplayRole)
     {
         if(orientation == Qt::Horizontal)
-            r = QString("Column %1").arg(section);
+            r = QString("Col %1").arg(section);
         else
             r = QString("Row %1").arg(section);
     }
@@ -94,7 +94,6 @@ bool ParkingListModel::appendRows(QList<ParkingModel *> &items)
 
         foreach(ParkingModel *item, items)
         {
-            QObject::connect(item, SIGNAL(dataChanged()), this, SLOT(updateItem()));
             this->m_parkings.append(item);
         }
 
@@ -115,10 +114,7 @@ bool ParkingListModel::insertRow(int row, ParkingModel *item)
     if(item != NULL)
     {
         this->beginInsertRows(QModelIndex(), row, row);
-
-        QObject::connect(item, SIGNAL(dataChanged()), this, SLOT(updateItem()));
         this->m_parkings.insert(row, item);
-
         this->endInsertRows();
 
         emit countChanged(this->rowCount());
@@ -151,9 +147,7 @@ bool ParkingListModel::removeRow(int row, const QModelIndex &parent)
     if(row >= 0 && row < this->rowCount())
     {
         this->beginRemoveRows(parent, row, row);
-
         this->m_parkings.removeAt(row);
-
         this->endRemoveRows();
 
         emit countChanged(this->rowCount());
@@ -212,18 +206,6 @@ bool ParkingListModel::setData(const QModelIndex &index, const QVariant &value, 
 
     return r;
 }
-
-void ParkingListModel::updateItem()
-{
-    /*
-    ParkingModel *item = static_cast<ParkingModel *>(sender());
-    QModelIndex index = this->indexFromItem(item);
-
-    if(index.isValid())
-        emit dataChanged(index, index);
-    */
-}
-
 
 void ParkingListModel::refresh()
 {

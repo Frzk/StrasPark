@@ -51,7 +51,6 @@ class ParkingListModel : public QAbstractListModel
         QList<ParkingModel*>    m_parkings;
 
     private slots:
-        void updateItem();
         void refresh();
         void fillList();
 };

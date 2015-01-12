@@ -26,6 +26,16 @@ class ParkingModel : public QObject
         bool                    getIsRelay() const;
         bool                    getIsFavorite() const;
 
+        void                    setId(const QVariant &id);
+        void                    setName(const QVariant &name);
+        void                    setStatus(const QVariant &status);
+        void                    setLongitude(const QVariant &lng);
+        void                    setLatitude(const QVariant &lat);
+        void                    setFree(const QVariant &freep);
+        void                    setTotal(const QVariant &total);
+        void                    setIsRelay(const QVariant &isRelay);
+        void                    setIsFavorite(const QVariant &isFavorite);
+
         QVariant                data(int role) const;
         bool                    setData(const QVariant &value, int role);
 
@@ -43,7 +53,6 @@ class ParkingModel : public QObject
         bool    m_isFavorite;
 
     signals:
-        void dataChanged();
 };
 
 #endif // PARKINGMODEL_H
