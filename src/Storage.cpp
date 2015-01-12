@@ -176,8 +176,8 @@ int Storage::countParking()
 bool Storage::getAllParkings(ParkingListModel *model)
 {
     bool r = false;
-    QList<ParkingModel*> l = QList<ParkingModel*>();
 
+    QList<ParkingModel*> l;
     QSqlQuery query;
 
     query.prepare("SELECT id, name, lng, lat, isRelay, isFavorite FROM parkingslots ORDER BY isFavorite DESC, name ASC");
