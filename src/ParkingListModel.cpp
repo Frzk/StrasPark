@@ -43,21 +43,6 @@ QVariant ParkingListModel::data(const QModelIndex &index, int role) const
     return r;
 }
 
-QVariant ParkingListModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    QVariant r = QVariant();
-
-    if(role == Qt::DisplayRole)
-    {
-        if(orientation == Qt::Horizontal)
-            r = QString("Col %1").arg(section);
-        else
-            r = QString("Row %1").arg(section);
-    }
-
-    return r;
-}
-
 Qt::ItemFlags ParkingListModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags r = Qt::ItemIsEnabled;
