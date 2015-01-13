@@ -33,7 +33,7 @@
 #endif
 
 #include <sailfishapp.h>
-#include "ParkingListModel.h"
+#include "SortedParkingListModel.h"
 #include "JSONRequest.h"
 
 
@@ -41,16 +41,20 @@ int main(int argc, char *argv[])
 {
     QGuiApplication *app = SailfishApp::application(argc, argv);
     app->setOrganizationName("org.kubler");
-    app->setApplicationName("StrasPArk");
+    app->setApplicationName("StrasPark");
 
     QQuickView *view = SailfishApp::createView();
 
     // TEST PURPOSES * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-    ParkingModel *item = new ParkingModel(1, "Parking test", "7.12345", "48.12345", false, false);
+    ParkingModel *item1 = new ParkingModel(1, "Parking test 1", "7.12345", "48.12345", false, true);
+    ParkingModel *item2 = new ParkingModel(2, "Parking test 2", "7.12345", "48.12345", false, true);
+    ParkingModel *item3 = new ParkingModel(3, "Parking test 3", "7.12345", "48.12345", false, false);
 
-    ParkingListModel *model = new ParkingListModel(app);
-    model->appendRow(item);
+    SortedParkingListModel *model = new SortedParkingListModel(app);
+    model->model()->appendRow(item2);
+    model->model()->appendRow(item3);
+    model->model()->appendRow(item1);
 
     JSONRequest *j = new JSONRequest(app);
     j->request(ParkingListModel::source1);

@@ -40,6 +40,8 @@ class ParkingListModel : public QAbstractListModel
         bool                    removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
         void                    clear();
 
+        ParkingModel*           itemAt(const QModelIndex &index) const;
+
     signals:
         void countChanged(int);
         void refreshNeeded();

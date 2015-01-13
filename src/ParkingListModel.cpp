@@ -192,6 +192,18 @@ bool ParkingListModel::setData(const QModelIndex &index, const QVariant &value, 
     return r;
 }
 
+ParkingModel* ParkingListModel::itemAt(const QModelIndex &index) const
+{
+    ParkingModel* r = NULL;
+
+    if(index.isValid() && index.row() < this->rowCount())
+    {
+        r = this->m_parkings.at(index.row());
+    }
+
+    return r;
+}
+
 void ParkingListModel::refresh()
 {
 

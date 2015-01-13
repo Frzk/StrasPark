@@ -64,7 +64,7 @@ Page {
         section {
             criteria: ViewSection.FullString
             delegate: SectionHeader {
-                text: section == 1 ? qsTr("Favorites") : qsTr("Others")
+                text: section === "true" ? qsTr("Favorites") : qsTr("Others")
             }
             property: "isFavorite"
         }

@@ -2,6 +2,7 @@
 #define PARKINGMODEL_H
 
 #include <QObject>
+#include <QDebug>
 #include <QHash>
 #include <QString>
 #include <QVariant>
@@ -13,8 +14,11 @@ class ParkingModel : public QObject
     public:
         explicit ParkingModel(QObject *parent = 0);
         explicit ParkingModel(int id, QString name, QString lng, QString lat, bool isRelay, bool isFavorite, QObject *parent = 0);
+        ParkingModel(const ParkingModel &park, QObject *parent = 0);
 
         ~ParkingModel();
+
+        bool                    operator<(const ParkingModel &other) const;
 
         int                     getId() const;
         QString                 getName() const;
@@ -38,6 +42,7 @@ class ParkingModel : public QObject
 
         QVariant                data(int role) const;
         bool                    setData(const QVariant &value, int role);
+        bool                    isSmallerThan(const ParkingModel &other) const;
 
         QHash<int, QByteArray>  roleNames() const;
 
@@ -54,5 +59,7 @@ class ParkingModel : public QObject
 
     signals:
 };
+
+Q_DECLARE_METATYPE(ParkingModel)
 
 #endif // PARKINGMODEL_H

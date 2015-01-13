@@ -18,7 +18,8 @@ SOURCES += src/StrasPark.cpp \
     src/ParkingListModel.cpp \
     src/ParkingModel.cpp \
     src/Storage.cpp \
-    src/JSONRequest.cpp
+    src/JSONRequest.cpp \
+    src/SortedParkingListModel.cpp
 
 OTHER_FILES += qml/StrasPark.qml \
     qml/cover/CoverPage.qml \
@@ -41,7 +42,8 @@ HEADERS += \
     src/ParkingListModel.h \
     src/ParkingModel.h \
     src/Storage.h \
-    src/JSONRequest.h
+    src/JSONRequest.h \
+    src/SortedParkingListModel.h
 
 QT += \
     sql

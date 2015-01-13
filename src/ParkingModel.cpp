@@ -25,6 +25,19 @@ ParkingModel::ParkingModel(QObject *parent) :
 {
 }
 
+ParkingModel::ParkingModel(const ParkingModel &park, QObject *parent) :
+    m_id(park.m_id),
+    m_name(park.m_name),
+    m_status(park.m_status),
+    m_lng(park.m_lng),
+    m_lat(park.m_lat),
+    m_free(park.m_free),
+    m_total(park.m_total),
+    m_isRelay(park.m_isRelay),
+    m_isFavorite(park.m_isFavorite)
+{
+}
+
 ParkingModel::ParkingModel(int id, QString name, QString lng, QString lat, bool isRelay, bool isFavorite, QObject *parent) :
     m_id(id),
     m_name(name),
@@ -41,6 +54,23 @@ ParkingModel::ParkingModel(int id, QString name, QString lng, QString lat, bool 
 ParkingModel::~ParkingModel()
 {
 
+}
+
+bool ParkingModel::operator<(const ParkingModel &other) const
+{
+    return this->isSmallerThan(other);
+}
+
+bool ParkingModel::isSmallerThan(ParkingModel const &other) const
+{
+    bool r = false;
+
+    if(this->getIsFavorite() == other.getIsFavorite())
+        r = this->getName() > other.getName();
+    else
+        r = this->getIsFavorite() < other.getIsFavorite();
+
+    return r;
 }
 
 QHash<int, QByteArray> ParkingModel::roleNames() const
