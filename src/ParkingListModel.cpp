@@ -53,6 +53,25 @@ Qt::ItemFlags ParkingListModel::flags(const QModelIndex &index) const
     return r;
 }
 
+QModelIndex ParkingListModel::index(int row, int column, const QModelIndex &parent) const
+{
+    QModelIndex r;
+
+    if(this->hasIndex(row, column, parent))
+        r = this->createIndex(row, column, this->m_parkings.at(row));
+
+    return r;
+}
+
+bool ParkingListModel::hasIndex(int row, int column, const QModelIndex &parent) const
+{
+    bool r = false;
+    if(row >= 0 && row < rowCount(parent) && column == 0)
+        r = true;
+
+    return r;
+}
+
 bool ParkingListModel::appendRow(ParkingModel *item)
 {
     bool r = false;

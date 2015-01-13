@@ -131,14 +131,14 @@ ListItem {
                 text: qsTr("Add to favorites")
                 visible: !isFavorite
                 onClicked: {
-                    markAsFavorite(1)
+                    markAsFavorite(true)
                 }
             }
             MenuItem {
                 text: qsTr("Remove from favorites")
                 visible: isFavorite
                 onClicked: {
-                    markAsFavorite(0)
+                    markAsFavorite(false)
                 }
             }
         }

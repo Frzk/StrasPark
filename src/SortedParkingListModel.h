@@ -27,7 +27,8 @@ class SortedParkingListModel : public QSortFilterProxyModel
         ParkingListModel    *m_model;
 
     public slots:
-        bool                markAsFavorite(index);
+        void                update();
+        void                markAsFavorite(const int index, const bool isFav);
 };
 
 #endif // SORTEDPARKINGLISTMODEL_H

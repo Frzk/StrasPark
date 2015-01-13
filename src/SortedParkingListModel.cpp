@@ -45,3 +45,14 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
 
     return r;
 }
+
+void SortedParkingListModel::update()
+{
+    qDebug() << "Triggered from QML.";
+}
+
+void SortedParkingListModel::markAsFavorite(const int index, const bool isFav)
+{
+    QModelIndex idx = this->mapToSource(this->index(index, 0));
+    this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
+}
