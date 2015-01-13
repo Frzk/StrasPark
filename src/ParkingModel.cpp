@@ -1,15 +1,15 @@
 #include "ParkingModel.h"
 
-enum {
+enum Roles {
     IdRole = Qt::UserRole + 1,          // Id of the parking lot
-    NameRole = Qt::UserRole + 2,        // Name of the parking lot
-    StatusRole = Qt::UserRole + 3,      // Status of the parking lot
-    FreeRole = Qt::UserRole + 4,        // Number of free places in the parking lot
-    TotalRole = Qt::UserRole + 5,       // Total number of places in the parking lot
-    LongitudeRole = Qt::UserRole + 6,   // Longitude
-    LatitudeRole = Qt::UserRole + 7,    // Latitude
-    IsRelayRole = Qt::UserRole + 8,     // True if the parking lot is a Parking+Tramway relay
-    IsFavoriteRole = Qt::UserRole + 9   // True if the parking has been marked as Favorite
+    NameRole,                           // Name of the parking lot
+    StatusRole,                         // Status of the parking lot
+    FreeRole,                           // Number of free places in the parking lot
+    TotalRole,                          // Total number of places in the parking lot
+    LongitudeRole,                      // Longitude
+    LatitudeRole,                       // Latitude
+    IsRelayRole,                        // True if the parking lot is a Parking+Tramway relay
+    IsFavoriteRole                      // True if the parking has been marked as Favorite
 };
 
 ParkingModel::ParkingModel(QObject *parent) :
