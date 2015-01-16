@@ -9,7 +9,6 @@ ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
     //FIXME:
     this->m_prototype = new ParkingModel();
     this->m_parkings = QList<ParkingModel *>();
-    this->m_db = new FavoritesStorage();
 
     //QObject::connect(this, SIGNAL(refreshNeeded()), this, SLOT(refresh()));
     //QObject::connect(this, SIGNAL(listUpToDate()), this, SLOT(fillList()));
@@ -20,8 +19,6 @@ ParkingListModel::~ParkingListModel()
     delete this->m_prototype;
     this->m_prototype = NULL;
     this->clear();
-
-    delete this->m_db;
 }
 
 QHash<int,QByteArray> ParkingListModel::roleNames() const

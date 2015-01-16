@@ -7,7 +7,6 @@
 #include <QNetworkAccessManager>
 
 #include "ParkingModel.h"
-#include "FavoritesStorage.h"
 
 class ParkingListModel : public QAbstractListModel
 {
@@ -55,7 +54,6 @@ class ParkingListModel : public QAbstractListModel
     private:
         ParkingModel            *m_prototype;
         QList<ParkingModel*>    m_parkings;
-        FavoritesStorage        *m_db;
 
     private slots:
         void refresh();
