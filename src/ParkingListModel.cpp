@@ -9,6 +9,7 @@ ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
     //FIXME:
     this->m_prototype = new ParkingModel();
     this->m_parkings = QList<ParkingModel *>();
+    this->m_db = new FavoritesStorage();
 
     //QObject::connect(this, SIGNAL(refreshNeeded()), this, SLOT(refresh()));
     //QObject::connect(this, SIGNAL(listUpToDate()), this, SLOT(fillList()));
@@ -19,6 +20,8 @@ ParkingListModel::~ParkingListModel()
     delete this->m_prototype;
     this->m_prototype = NULL;
     this->clear();
+
+    delete this->m_db;
 }
 
 QHash<int,QByteArray> ParkingListModel::roleNames() const
@@ -201,11 +204,26 @@ bool ParkingListModel::setData(const QModelIndex &index, const QVariant &value, 
 
     if(index.isValid() && index.row() < this->rowCount())
     {
-        this->m_parkings.at(index.row())->setData(value, role);
+        if(role == Qt::UserRole + 9)    // IsFavorite update !
+        {
+            int id = this->m_parkings.at(index.row())->data(Qt::UserRole + 1).toInt();
 
-        emit dataChanged(index, index);
+            if(value.toBool())
+                r = this->m_db->add(id);
+            else
+                r = this->m_db->remove(id);
+        }
+        else
+        {
+            r = true;
+        }
 
-        r = true;
+        if(r)
+        {
+            this->m_parkings.at(index.row())->setData(value, role);
+            emit dataChanged(index, index);
+        }
+        //FIXME: should we emit something else here ? (error ?)
     }
 
     return r;
