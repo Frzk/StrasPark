@@ -22,8 +22,8 @@ class JSONRequest : public QObject
         QNetworkAccessManager *m_qnam;
 
     signals:
-        void documentReady(QJsonDocument document);
-        void networkError(QNetworkReply::NetworkError error);
+        void documentReady(const QJsonDocument &document);
+        void networkError(const QNetworkReply::NetworkError &error);
 
     private slots:
         void handleReply(QNetworkReply *reply);
