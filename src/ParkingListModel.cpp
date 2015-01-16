@@ -201,26 +201,20 @@ void ParkingListModel::clear()
 bool ParkingListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     bool r = false;
+    ParkingModel *p = this->itemAt(index);
 
-    if(index.isValid() && index.row() < this->rowCount())
+    if(p != NULL)
     {
-        if(role == Qt::UserRole + 9)    // IsFavorite update !
-        {
-            int id = this->m_parkings.at(index.row())->data(Qt::UserRole + 1).toInt();
-
-            if(value.toBool())
-                r = this->m_db->add(id);
-            else
-                r = this->m_db->remove(id);
-        }
-        else
-        {
-            r = true;
-        }
+        r = p->setData(value, role);
 
         if(r)
         {
-            this->m_parkings.at(index.row())->setData(value, role);
+            if(role == Qt::UserRole + 9)
+            {
+                int id = p->data(Qt::UserRole + 1).toInt();
+                emit isFavoriteChanged(id, value.toBool());
+            }
+
             emit dataChanged(index, index);
         }
         //FIXME: should we emit something else here ? (error ?)
