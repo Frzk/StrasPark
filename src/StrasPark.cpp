@@ -33,9 +33,7 @@
 #endif
 
 #include <sailfishapp.h>
-#include "SortedParkingListModel.h"
-#include "JSONRequest.h"
-
+#include "Controller.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,23 +43,9 @@ int main(int argc, char *argv[])
 
     QQuickView *view = SailfishApp::createView();
 
-    // TEST PURPOSES * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    Controller *controller = new Controller(app);
 
-    ParkingModel *item1 = new ParkingModel(1, "Parking test 1", "7.12345", "48.12345", false, true);
-    ParkingModel *item2 = new ParkingModel(2, "Parking test 2", "7.12345", "48.12345", false, true);
-    ParkingModel *item3 = new ParkingModel(3, "Parking test 3", "7.12345", "48.12345", false, false);
-
-    SortedParkingListModel *model = new SortedParkingListModel(app);
-    model->model()->appendRow(item2);
-    model->model()->appendRow(item3);
-    model->model()->appendRow(item1);
-
-    JSONRequest *j = new JSONRequest(app);
-    j->request(ParkingListModel::source1);
-
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-    view->rootContext()->setContextProperty("parkingListModel", model);
+    view->rootContext()->setContextProperty("parkingListModel", controller->model());
     view->setSource(SailfishApp::pathTo("qml/StrasPark.qml"));
     view->showFullScreen();
 
