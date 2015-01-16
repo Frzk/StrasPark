@@ -26,7 +26,7 @@ class JSONRequest : public QObject
         void networkError(QNetworkReply::NetworkError error);
 
     private slots:
-        void parseJSON(QNetworkReply *reply);
+        void handleReply(QNetworkReply *reply);
 };
 
 #endif // JSONREQUEST_H
