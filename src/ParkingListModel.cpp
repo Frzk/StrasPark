@@ -232,12 +232,14 @@ ParkingModel* ParkingListModel::itemAt(const QModelIndex &index) const
     return r;
 }
 
-void ParkingListModel::refresh()
-{
-
-}
-
-void ParkingListModel::fillList(const QJsonDocument &d)
+void ParkingListModel::refresh(const QJsonDocument &d)
 {
     qDebug() << d;
+}
+
+void ParkingListModel::fillModel(const QJsonDocument &d)
+{
+    qDebug() << d;
+
+    emit modelFilled();
 }

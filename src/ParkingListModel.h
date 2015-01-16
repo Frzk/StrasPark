@@ -48,6 +48,7 @@ class ParkingListModel : public QAbstractListModel
     signals:
         void countChanged(int);
         void isFavoriteChanged(int, bool);
+        void modelFilled();
         void refreshNeeded();
         void listUpToDate();
 
@@ -56,8 +57,8 @@ class ParkingListModel : public QAbstractListModel
         QList<ParkingModel*>    m_parkings;
 
     private slots:
-        void refresh();
-        void fillList(const QJsonDocument &d);
+        void refresh(const QJsonDocument &d);
+        void fillModel(const QJsonDocument &d);
 };
 
 #endif // PARKINGLISTMODEL_H
