@@ -246,7 +246,7 @@ void ParkingListModel::refresh()
 
 }
 
-void ParkingListModel::fillList()
+void ParkingListModel::fillList(const QJsonDocument &d)
 {
-
+    qDebug() << d;
 }

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QJsonDocument>
 #include <QNetworkAccessManager>
 
 #include "ParkingModel.h"
@@ -57,7 +58,7 @@ class ParkingListModel : public QAbstractListModel
 
     private slots:
         void refresh();
-        void fillList();
+        void fillList(const QJsonDocument &d);
 };
 
 #endif // PARKINGLISTMODEL_H
