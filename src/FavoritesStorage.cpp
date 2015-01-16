@@ -41,7 +41,7 @@ bool FavoritesStorage::load()
     return r;
 }
 
-QList<int> FavoritesStorage::get() const
+QSet<int> FavoritesStorage::get() const
 {
     return this->m_favorites;
 }
