@@ -3,10 +3,6 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonValue>
 #include <QNetworkAccessManager>
 
 #include "ParkingModel.h"
@@ -51,17 +47,13 @@ class ParkingListModel : public QAbstractListModel
     signals:
         void countChanged(int);
         void isFavoriteChanged(int, bool);
-        void modelFilled();
+        //void modelFilled();
         void refreshNeeded();
         void listUpToDate();
 
     private:
         ParkingModel            *m_prototype;
         QList<ParkingModel*>    m_parkings;
-
-    private slots:
-        void refresh(const QJsonDocument &d);
-        void fillModel(const QJsonDocument &d);
 };
 
 #endif // PARKINGLISTMODEL_H
