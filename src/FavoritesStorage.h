@@ -23,6 +23,7 @@ class FavoritesStorage : public QObject
         bool            save() const;
         bool            add(const int id);
         bool            remove(const int id);
+        bool            contains(const int id) const;
         QSet<int>       get() const;
 
     private:

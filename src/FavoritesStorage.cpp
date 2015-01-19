@@ -73,3 +73,8 @@ bool FavoritesStorage::remove(const int id)
     this->m_favorites.remove(id);
     return this->save();
 }
+
+bool FavoritesStorage::contains(const int id) const
+{
+    return this->m_favorites.contains(id);
+}
