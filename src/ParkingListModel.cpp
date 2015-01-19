@@ -18,7 +18,9 @@ ParkingListModel::~ParkingListModel()
 {
     delete this->m_prototype;
     this->m_prototype = NULL;
+
     this->clear();
+    this->m_parkings.clear();
 }
 
 QHash<int,QByteArray> ParkingListModel::roleNames() const
@@ -151,7 +153,10 @@ bool ParkingListModel::removeRow(int row, const QModelIndex &parent)
     if(row >= 0 && row < this->rowCount())
     {
         this->beginRemoveRows(parent, row, row);
+
+        delete this->m_parkings.at(row);
         this->m_parkings.removeAt(row);
+
         this->endRemoveRows();
 
         emit countChanged(this->rowCount());
@@ -172,6 +177,7 @@ bool ParkingListModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for(int i=(row + count - 1) ; i <= row ; i--)
         {
+            delete this->m_parkings.at(i);
             this->m_parkings.removeAt(i);
         }
 
@@ -234,12 +240,45 @@ ParkingModel* ParkingListModel::itemAt(const QModelIndex &index) const
 
 void ParkingListModel::refresh(const QJsonDocument &d)
 {
-    qDebug() << d;
+    //qDebug() << d;
+
+    /*
+    QJsonValue datatime = obj.value("datatime").toString();
+    qDebug() << datatime;
+    */
 }
 
 void ParkingListModel::fillModel(const QJsonDocument &d)
 {
-    qDebug() << d;
+    QJsonObject obj = d.object();
+
+    QJsonValue v = obj.value("s");
+
+    if(v != QJsonValue::Undefined)
+    {
+        QJsonArray parks = v.toArray();
+        QList<ParkingModel *> l;
+
+        foreach(const QJsonValue p, parks)
+        {
+            QJsonObject o = p.toObject();
+            //FIXME: sounds like a good candidate for a memory leak :
+            // where am I supposed to delete ?
+            ParkingModel *parkingLot = new ParkingModel(
+                        o.value("id").toInt(),
+                        o.value("ln").toString(),
+                        "",
+                        "",
+                        false,
+                        false);
+
+            l << parkingLot;
+        }
+
+        this->appendRows(l);
+    }
+    //else
+    //FIXME
 
     emit modelFilled();
 }

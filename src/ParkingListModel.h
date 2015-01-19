@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QNetworkAccessManager>
 
 #include "ParkingModel.h"
