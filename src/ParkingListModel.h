@@ -47,7 +47,6 @@ class ParkingListModel : public QAbstractListModel
     signals:
         void countChanged(int);
         void isFavoriteChanged(int, bool);
-        //void modelFilled();
         void refreshNeeded();
         void listUpToDate();
 

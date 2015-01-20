@@ -23,7 +23,7 @@ ParkingListModel::~ParkingListModel()
     this->m_parkings.clear();
 }
 
-QHash<int,QByteArray> ParkingListModel::roleNames() const
+QHash<int, QByteArray> ParkingListModel::roleNames() const
 {
     return this->m_prototype->roleNames();
 }
@@ -68,7 +68,7 @@ QModelIndex ParkingListModel::index(int row, int column, const QModelIndex &pare
 bool ParkingListModel::hasIndex(int row, int column, const QModelIndex &parent) const
 {
     bool r = false;
-    if(row >= 0 && row < rowCount(parent) && column == 0)
+    if(row >= 0 && row < this->rowCount(parent) && column == 0)
         r = true;
 
     return r;
