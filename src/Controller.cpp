@@ -4,26 +4,11 @@ Controller::Controller(QObject *parent) :
     QObject(parent)
 {
     this->m_model = new SortedParkingListModel(this);
-
-    // TEST PURPOSES * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-    /*
-    ParkingModel *item1 = new ParkingModel(1, "Parking test 1", "7.12345", "48.12345", false, true);
-    ParkingModel *item2 = new ParkingModel(2, "Parking test 2", "7.12345", "48.12345", false, true);
-    ParkingModel *item3 = new ParkingModel(3, "Parking test 3", "7.12345", "48.12345", false, false);
-
-    this->m_model->model()->appendRow(item2);
-    this->m_model->model()->appendRow(item3);
-    this->m_model->model()->appendRow(item1);
-    */
-
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
     this->m_fav = new FavoritesStorage(this);
-    this->m_fav->load();
-
     this->m_req1 = new JSONRequest(this);
     this->m_req2 = new JSONRequest(this);
+
+    this->m_fav->load();
 
     QObject::connect(this->m_model->model(), SIGNAL(isFavoriteChanged(int, bool)), this, SLOT(updateFavorite(int, bool)));
     QObject::connect(this, SIGNAL(modelFilled()), this, SLOT(updateData()));
@@ -49,20 +34,6 @@ SortedParkingListModel* Controller::model() const
 
 void Controller::updateData()
 {
-    // Set Favorites.
-    if(this->m_fav != NULL)
-    {
-        for(int i=0 ; i<this->m_model->model()->rowCount() ; i++)
-        {
-            QModelIndex idx = this->m_model->model()->index(i, 0);
-            int id = this->m_model->model()->data(idx, Qt::UserRole + 1).toInt();
-
-            if(this->m_fav->contains(id))
-            //    qDebug() << "is Favorite !";
-                this->m_model->model()->setData(idx, QVariant(true), Qt::UserRole + 9);
-        }
-    }
-
     // Launch timer.
     this->m_req2->request(ParkingListModel::source2);
 }
@@ -103,7 +74,33 @@ void Controller::fillModel(const QJsonDocument &d)
 
 void Controller::refresh(const QJsonDocument &d)
 {
-    qDebug() << d;
+    QJsonObject obj = d.object();
+    //FIXME: make this a QDateTime with i18n :
+    QJsonValue datatime = obj.value("datatime").toString();
+
+    QJsonValue v = obj.value("s");
+
+    if(v != QJsonValue::Undefined)
+    {
+        QHash<int, QJsonObject> values = Controller::jsonArrayToHashMap(v.toArray());
+
+        for(int i=0 ; i<this->m_model->model()->rowCount() ; i++)
+        {
+            QModelIndex idx = this->m_model->model()->index(i, 0);
+            int id = this->m_model->model()->data(idx, Qt::UserRole + 1).toInt();
+
+            QJsonObject o = values.take(id);
+            QString newStatus = o.value("ds").toString();
+            int freePlaces = o.value("df").toString().toInt();
+            int totalPlaces = o.value("dt").toString().toInt();
+
+            this->m_model->model()->setData(idx, QVariant(newStatus), Qt::UserRole + 3);    // StatusRole
+            this->m_model->model()->setData(idx, QVariant(freePlaces), Qt::UserRole + 4);   // FreeRole
+            this->m_model->model()->setData(idx, QVariant(totalPlaces), Qt::UserRole + 5);  // TotalRole
+        }
+    }
+    //else
+    //FIXME
 }
 
 bool Controller::updateFavorite(int id, bool value)
@@ -114,6 +111,20 @@ bool Controller::updateFavorite(int id, bool value)
         r = this->m_fav->add(id);
     else
         r = this->m_fav->remove(id);
+
+    return r;
+}
+
+QHash<int, QJsonObject> Controller::jsonArrayToHashMap(const QJsonArray &a)
+{
+    QHash<int, QJsonObject> r;
+
+    for(int i=0 ; i<a.size() ; i++)
+    {
+        QJsonObject obj = a.at(i).toObject();
+        int id = obj.value("id").toString().toInt();
+        r.insert(id, obj);
+    }
 
     return r;
 }

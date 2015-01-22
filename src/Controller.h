@@ -25,6 +25,8 @@ class Controller : public QObject
 
         SortedParkingListModel*     model() const;
 
+        static QHash<int, QJsonObject>    jsonArrayToHashMap(const QJsonArray &a);
+
     private:
         SortedParkingListModel      *m_model;
         FavoritesStorage            *m_fav;
