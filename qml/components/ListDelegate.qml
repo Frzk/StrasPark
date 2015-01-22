@@ -46,6 +46,16 @@ ListItem {
         return r;
     }
 
+    /**
+     *
+     *
+     *
+     */
+    function isOpen(status)
+    {
+        return status === "status_1";
+    }
+
 
     menu: contextMenu
 
@@ -74,7 +84,8 @@ ListItem {
             leftMargin: isFavorite ? Theme.paddingMedium : Theme.paddingLarge
             rightMargin: Theme.paddingLarge
         }
-        color: highlighted ? Theme.highlightColor : Theme.primaryColor
+        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+                              : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
         text: (isRelay ? "P+R " : "") + name
         truncationMode: TruncationMode.Fade
     }
@@ -87,9 +98,9 @@ ListItem {
             right: parent.right
             rightMargin: Theme.paddingLarge
         }
-        color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+                              : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
         font {
-            capitalization: Font.AllUppercase
             pixelSize: Theme.fontSizeExtraSmall
         }
         horizontalAlignment: Text.AlignRight
