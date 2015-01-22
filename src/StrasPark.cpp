@@ -33,31 +33,19 @@
 #endif
 
 #include <sailfishapp.h>
-#include "ParkingListModel.h"
-#include "JSONRequest.h"
-
+#include "Controller.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication *app = SailfishApp::application(argc, argv);
     app->setOrganizationName("org.kubler");
-    app->setApplicationName("StrasPArk");
+    app->setApplicationName("StrasPark");
 
     QQuickView *view = SailfishApp::createView();
 
-    // TEST PURPOSES * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    Controller *controller = new Controller(app);
 
-    ParkingModel *item = new ParkingModel(1, "Parking test", "7.12345", "48.12345", false, false);
-
-    ParkingListModel *model = new ParkingListModel(app);
-    model->appendRow(item);
-
-    JSONRequest *j = new JSONRequest(app);
-    j->request(ParkingListModel::source1);
-
-    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-    view->rootContext()->setContextProperty("parkingListModel", model);
+    view->rootContext()->setContextProperty("parkingListModel", controller->model());
     view->setSource(SailfishApp::pathTo("qml/StrasPark.qml"));
     view->showFullScreen();
 

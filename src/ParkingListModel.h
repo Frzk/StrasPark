@@ -2,6 +2,7 @@
 #define PARKINGLISTMODEL_H
 
 #include <QObject>
+
 #include <QAbstractListModel>
 #include <QNetworkAccessManager>
 
@@ -27,9 +28,9 @@ class ParkingListModel : public QAbstractListModel
         // REIMPLEMENTED METHODS
         int                     rowCount(const QModelIndex &parent = QModelIndex()) const;
         QVariant                data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-        QVariant                headerData(int section, Qt::Orientation orientation, int role) const;
         QHash<int, QByteArray>  roleNames() const;
         Qt::ItemFlags           flags(const QModelIndex &index) const;
+        QModelIndex             index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
         bool                    setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
@@ -41,19 +42,18 @@ class ParkingListModel : public QAbstractListModel
         bool                    removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
         void                    clear();
 
+        bool                    hasIndex(int row, int column, const QModelIndex &parent) const;
+        ParkingModel*           itemAt(const QModelIndex &index) const;
+
     signals:
         void countChanged(int);
+        void isFavoriteChanged(int, bool);
         void refreshNeeded();
         void listUpToDate();
 
     private:
         ParkingModel            *m_prototype;
         QList<ParkingModel*>    m_parkings;
-
-    private slots:
-        void updateItem();
-        void refresh();
-        void fillList();
 };
 
 #endif // PARKINGLISTMODEL_H

@@ -18,10 +18,12 @@ ParkingListModel::~ParkingListModel()
 {
     delete this->m_prototype;
     this->m_prototype = NULL;
+
     this->clear();
+    this->m_parkings.clear();
 }
 
-QHash<int,QByteArray> ParkingListModel::roleNames() const
+QHash<int, QByteArray> ParkingListModel::roleNames() const
 {
     return this->m_prototype->roleNames();
 }
@@ -43,27 +45,31 @@ QVariant ParkingListModel::data(const QModelIndex &index, int role) const
     return r;
 }
 
-QVariant ParkingListModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    QVariant r = QVariant();
-
-    if(role == Qt::DisplayRole)
-    {
-        if(orientation == Qt::Horizontal)
-            r = QString("Column %1").arg(section);
-        else
-            r = QString("Row %1").arg(section);
-    }
-
-    return r;
-}
-
 Qt::ItemFlags ParkingListModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags r = Qt::ItemIsEnabled;
 
     if(index.isValid())
         r = QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+
+    return r;
+}
+
+QModelIndex ParkingListModel::index(int row, int column, const QModelIndex &parent) const
+{
+    QModelIndex r;
+
+    if(this->hasIndex(row, column, parent))
+        r = this->createIndex(row, column, this->m_parkings.at(row));
+
+    return r;
+}
+
+bool ParkingListModel::hasIndex(int row, int column, const QModelIndex &parent) const
+{
+    bool r = false;
+    if(row >= 0 && row < this->rowCount(parent) && column == 0)
+        r = true;
 
     return r;
 }
@@ -94,7 +100,6 @@ bool ParkingListModel::appendRows(QList<ParkingModel *> &items)
 
         foreach(ParkingModel *item, items)
         {
-            QObject::connect(item, SIGNAL(dataChanged()), this, SLOT(updateItem()));
             this->m_parkings.append(item);
         }
 
@@ -115,10 +120,7 @@ bool ParkingListModel::insertRow(int row, ParkingModel *item)
     if(item != NULL)
     {
         this->beginInsertRows(QModelIndex(), row, row);
-
-        QObject::connect(item, SIGNAL(dataChanged()), this, SLOT(updateItem()));
         this->m_parkings.insert(row, item);
-
         this->endInsertRows();
 
         emit countChanged(this->rowCount());
@@ -152,6 +154,7 @@ bool ParkingListModel::removeRow(int row, const QModelIndex &parent)
     {
         this->beginRemoveRows(parent, row, row);
 
+        delete this->m_parkings.at(row);
         this->m_parkings.removeAt(row);
 
         this->endRemoveRows();
@@ -174,6 +177,7 @@ bool ParkingListModel::removeRows(int row, int count, const QModelIndex &parent)
 
         for(int i=(row + count - 1) ; i <= row ; i--)
         {
+            delete this->m_parkings.at(i);
             this->m_parkings.removeAt(i);
         }
 
@@ -200,37 +204,36 @@ void ParkingListModel::clear()
 bool ParkingListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     bool r = false;
+    ParkingModel *p = this->itemAt(index);
 
-    if(index.isValid() && index.row() < this->rowCount())
+    if(p != NULL)
     {
-        this->m_parkings.at(index.row())->setData(value, role);
+        r = p->setData(value, role);
 
-        emit dataChanged(index, index);
+        if(r)
+        {
+            if(role == Qt::UserRole + 9)
+            {
+                int id = p->data(Qt::UserRole + 1).toInt();
+                emit isFavoriteChanged(id, value.toBool());
+            }
 
-        r = true;
+            emit dataChanged(index, index);
+        }
+        //FIXME: should we emit something else here ? (error ?)
     }
 
     return r;
 }
 
-void ParkingListModel::updateItem()
+ParkingModel* ParkingListModel::itemAt(const QModelIndex &index) const
 {
-    /*
-    ParkingModel *item = static_cast<ParkingModel *>(sender());
-    QModelIndex index = this->indexFromItem(item);
+    ParkingModel* r = NULL;
 
-    if(index.isValid())
-        emit dataChanged(index, index);
-    */
-}
+    if(index.isValid() && index.row() < this->rowCount())
+    {
+        r = this->m_parkings.at(index.row());
+    }
 
-
-void ParkingListModel::refresh()
-{
-
-}
-
-void ParkingListModel::fillList()
-{
-
+    return r;
 }

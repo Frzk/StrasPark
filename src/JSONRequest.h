@@ -2,6 +2,7 @@
 #define JSONREQUEST_H
 
 #include <QObject>
+
 #include <QJsonDocument>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -15,17 +16,18 @@ class JSONRequest : public QObject
 
     public:
         explicit    JSONRequest(QObject *parent = 0);
+        ~JSONRequest();
         void        request(const QString &url) const;
 
     private:
         QNetworkAccessManager *m_qnam;
 
     signals:
-        void documentReady(QJsonDocument document);
-        void networkError(QNetworkReply::NetworkError error);
+        void documentReady(const QJsonDocument &document);
+        void networkError(const QNetworkReply::NetworkError &error);
 
     private slots:
-        void parseJSON(QNetworkReply *reply);
+        void handleReply(QNetworkReply *reply);
 };
 
 #endif // JSONREQUEST_H

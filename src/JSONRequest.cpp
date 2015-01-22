@@ -5,7 +5,7 @@ JSONRequest::JSONRequest(QObject *parent) :
 {
     this->m_qnam = new QNetworkAccessManager(parent);
 
-    QObject::connect(this->m_qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJSON(QNetworkReply*)));
+    QObject::connect(this->m_qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleReply(QNetworkReply*)));
 }
 
 JSONRequest::~JSONRequest()
@@ -37,7 +37,7 @@ void JSONRequest::request(const QString &url) const
  * @emit documentReady(QJsonDocument document) if the request succeeded and the document has been parsed successfully.
  * @emit networkError(QNetworkReply::NetworkError error) if the request failed.
  */
-void JSONRequest::parseJSON(QNetworkReply *reply)
+void JSONRequest::handleReply(QNetworkReply *reply)
 {
     if(reply->error() == QNetworkReply::NoError)
     {

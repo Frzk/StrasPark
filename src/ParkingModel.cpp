@@ -1,15 +1,15 @@
 #include "ParkingModel.h"
 
-enum {
+enum Roles {
     IdRole = Qt::UserRole + 1,          // Id of the parking lot
-    NameRole = Qt::UserRole + 2,        // Name of the parking lot
-    StatusRole = Qt::UserRole + 3,      // Status of the parking lot
-    FreeRole = Qt::UserRole + 4,        // Number of free places in the parking lot
-    TotalRole = Qt::UserRole + 5,       // Total number of places in the parking lot
-    LongitudeRole = Qt::UserRole + 6,   // Longitude
-    LatitudeRole = Qt::UserRole + 7,    // Latitude
-    IsRelayRole = Qt::UserRole + 8,     // True if the parking lot is a Parking+Tramway relay
-    IsFavoriteRole = Qt::UserRole + 9   // True if the parking has been marked as Favorite
+    NameRole,                           // Name of the parking lot
+    StatusRole,                         // Status of the parking lot
+    FreeRole,                           // Number of free places in the parking lot
+    TotalRole,                          // Total number of places in the parking lot
+    LongitudeRole,                      // Longitude
+    LatitudeRole,                       // Latitude
+    IsRelayRole,                        // True if the parking lot is a Parking+Tramway relay
+    IsFavoriteRole                      // True if the parking has been marked as Favorite
 };
 
 ParkingModel::ParkingModel(QObject *parent) :
@@ -22,6 +22,19 @@ ParkingModel::ParkingModel(QObject *parent) :
     m_total(0),
     m_isRelay(false),
     m_isFavorite(false)
+{
+}
+
+ParkingModel::ParkingModel(const ParkingModel &park, QObject *parent) :
+    m_id(park.m_id),
+    m_name(park.m_name),
+    m_status(park.m_status),
+    m_lng(park.m_lng),
+    m_lat(park.m_lat),
+    m_free(park.m_free),
+    m_total(park.m_total),
+    m_isRelay(park.m_isRelay),
+    m_isFavorite(park.m_isFavorite)
 {
 }
 
@@ -41,6 +54,23 @@ ParkingModel::ParkingModel(int id, QString name, QString lng, QString lat, bool 
 ParkingModel::~ParkingModel()
 {
 
+}
+
+bool ParkingModel::operator<(const ParkingModel &other) const
+{
+    return this->isSmallerThan(other);
+}
+
+bool ParkingModel::isSmallerThan(ParkingModel const &other) const
+{
+    bool r = false;
+
+    if(this->getIsFavorite() == other.getIsFavorite())
+        r = this->getName() > other.getName();
+    else
+        r = this->getIsFavorite() < other.getIsFavorite();
+
+    return r;
 }
 
 QHash<int, QByteArray> ParkingModel::roleNames() const
@@ -105,6 +135,54 @@ bool ParkingModel::getIsFavorite() const
     return m_isFavorite;
 }
 
+
+void ParkingModel::setId(const QVariant &id)
+{
+    this->m_id = id.toInt();
+}
+
+void ParkingModel::setName(const QVariant &name)
+{
+    this->m_name = name.toString();
+}
+
+void ParkingModel::setLongitude(const QVariant &lng)
+{
+    this->m_lng = lng.toString();
+}
+
+void ParkingModel::setLatitude(const QVariant &lat)
+{
+    this->m_lat = lat.toString();
+}
+
+void ParkingModel::setStatus(const QVariant &status)
+{
+    this->m_status = status.toString();
+}
+
+void ParkingModel::setFree(const QVariant &freep)
+{
+    this->m_free = freep.toInt();
+}
+
+void ParkingModel::setTotal(const QVariant &total)
+{
+    this->m_total = total.toInt();
+}
+
+void ParkingModel::setIsRelay(const QVariant &isRelay)
+{
+    this->m_isRelay = isRelay.toBool();
+}
+
+void ParkingModel::setIsFavorite(const QVariant &isFavorite)
+{
+    this->m_isFavorite = isFavorite.toBool();
+}
+
+
+
 QVariant ParkingModel::data(int role) const
 {
     QVariant r = QVariant();
@@ -154,9 +232,51 @@ QVariant ParkingModel::data(int role) const
 
 bool ParkingModel::setData(const QVariant &value, int role)
 {
-    //FIXME
+    bool r = true;
 
-    emit dataChanged();
+    switch(role)
+    {
+        case IdRole:
+            this->setId(value);
+            break;
 
-    return true;
+        case Qt::DisplayRole:
+        case NameRole:
+            this->setName(value);
+            break;
+
+        case StatusRole:
+            this->setStatus(value);
+            break;
+
+        case FreeRole:
+            this->setFree(value);
+            break;
+
+        case TotalRole:
+            this->setTotal(value);
+            break;
+
+        case LongitudeRole:
+            this->setLongitude(value);
+            break;
+
+        case LatitudeRole:
+            this->setLatitude(value);
+            break;
+
+        case IsRelayRole:
+            this->setIsRelay(value);
+            break;
+
+        case IsFavoriteRole:
+            this->setIsFavorite(value);
+            break;
+
+        default:
+            r = false;
+            break;
+    }
+
+    return r;
 }
