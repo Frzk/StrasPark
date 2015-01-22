@@ -47,9 +47,12 @@ ListItem {
     }
 
     /**
+     * Returns true if the parking is open and not full, false otherwise.
      *
+     * @param   string  status  Status of the parking lot, as given by the JSON source
+     *                          (can be either "status_1", "status_2", "status_3" or "status_4").
      *
-     *
+     * @return  string
      */
     function isOpen(status)
     {
@@ -128,10 +131,15 @@ ListItem {
         id: contextMenu
 
         ContextMenu {
+            /*
+             * FIXME: sadly not feasible for now.
+             *        this should be implemented as soon as Jolla provides the necessary API/tools.
+             *
             MenuItem {
                 text: qsTr("Go there")
                 onClicked: console.log("FIXME.")
             }
+            */
             MenuItem {
                 text: qsTr("Add to favorites")
                 visible: !isFavorite
