@@ -16,12 +16,6 @@ ListItem {
         remorseAction(s, function() {
             ListView.view.model.markAsFavorite(index, f);
         }, 3000);
-
-        /*
-        remorseAction("test", function() {
-            console.log("Fire in the hole !");
-        });
-        */
     }
 
     /**
@@ -142,5 +136,14 @@ ListItem {
                 }
             }
         }
+    }
+
+
+    ListView.onAdd: AddAnimation {
+        target: listDelegate
+    }
+
+    ListView.onRemove: RemoveAnimation {
+        target: listDelegate
     }
 }
