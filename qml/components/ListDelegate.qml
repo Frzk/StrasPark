@@ -16,12 +16,6 @@ ListItem {
         remorseAction(s, function() {
             ListView.view.model.markAsFavorite(index, f);
         }, 3000);
-
-        /*
-        remorseAction("test", function() {
-            console.log("Fire in the hole !");
-        });
-        */
     }
 
     /**
@@ -52,6 +46,19 @@ ListItem {
         return r;
     }
 
+    /**
+     * Returns true if the parking is open and not full, false otherwise.
+     *
+     * @param   string  status  Status of the parking lot, as given by the JSON source
+     *                          (can be either "status_1", "status_2", "status_3" or "status_4").
+     *
+     * @return  string
+     */
+    function isOpen(status)
+    {
+        return status === "status_1";
+    }
+
 
     menu: contextMenu
 
@@ -80,7 +87,8 @@ ListItem {
             leftMargin: isFavorite ? Theme.paddingMedium : Theme.paddingLarge
             rightMargin: Theme.paddingLarge
         }
-        color: highlighted ? Theme.highlightColor : Theme.primaryColor
+        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+                              : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
         text: (isRelay ? "P+R " : "") + name
         truncationMode: TruncationMode.Fade
     }
@@ -93,9 +101,9 @@ ListItem {
             right: parent.right
             rightMargin: Theme.paddingLarge
         }
-        color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
+        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+                              : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
         font {
-            capitalization: Font.AllUppercase
             pixelSize: Theme.fontSizeExtraSmall
         }
         horizontalAlignment: Text.AlignRight
@@ -123,10 +131,15 @@ ListItem {
         id: contextMenu
 
         ContextMenu {
+            /*
+             * FIXME: sadly not feasible for now.
+             *        this should be implemented as soon as Jolla provides the necessary API/tools.
+             *
             MenuItem {
                 text: qsTr("Go there")
                 onClicked: console.log("FIXME.")
             }
+            */
             MenuItem {
                 text: qsTr("Add to favorites")
                 visible: !isFavorite
@@ -142,5 +155,14 @@ ListItem {
                 }
             }
         }
+    }
+
+
+    ListView.onAdd: AddAnimation {
+        target: listDelegate
+    }
+
+    ListView.onRemove: RemoveAnimation {
+        target: listDelegate
     }
 }

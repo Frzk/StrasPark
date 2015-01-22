@@ -38,20 +38,9 @@ Page {
     id: page
 
 
-/*
-  //FIXME: doesn't work... does it need some thread ?
-
-    BusyIndicator {
-        anchors {
-            centerIn: parent
-        }
-        running: pModel.loading
-        size: BusyIndicatorSize.Large
-    }
-*/
-
     SilicaListView {
         id: view
+
 
         anchors {
             fill: parent
@@ -76,16 +65,7 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
             }
         }
-    }
 
-    /*
-    Timer {
-        id: updateDataTimer
-
-        interval: 180000 // 3 minutes
-        repeat: true
-        running: true
-        onTriggered: pModel.updateNeeded()
+        VerticalScrollDecorator {}
     }
-    */
 }
