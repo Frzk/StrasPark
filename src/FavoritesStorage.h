@@ -2,6 +2,7 @@
 #define FAVORITESSTORAGE_H
 
 #include <QObject>
+
 #include <QDebug>
 #include <QDataStream>
 #include <QDir>

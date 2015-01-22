@@ -2,6 +2,7 @@
 #define PARKINGMODEL_H
 
 #include <QObject>
+
 #include <QDebug>
 #include <QHash>
 #include <QString>

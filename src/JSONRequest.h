@@ -2,6 +2,7 @@
 #define JSONREQUEST_H
 
 #include <QObject>
+
 #include <QJsonDocument>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>

@@ -23,9 +23,8 @@ class Controller : public QObject
 
         ~Controller();
 
-        SortedParkingListModel*     model() const;
-
-        static QHash<int, QJsonObject>    jsonArrayToHashMap(const QJsonArray &a);
+        SortedParkingListModel*             model() const;
+        static QHash<int, QJsonObject>      jsonArrayToHashMap(const QJsonArray &a);
 
     private:
         SortedParkingListModel      *m_model;

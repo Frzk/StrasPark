@@ -2,6 +2,7 @@
 #define PARKINGLISTMODEL_H
 
 #include <QObject>
+
 #include <QAbstractListModel>
 #include <QNetworkAccessManager>
 

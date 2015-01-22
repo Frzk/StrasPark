@@ -17,7 +17,6 @@ CONFIG += sailfishapp
 SOURCES += src/StrasPark.cpp \
     src/ParkingListModel.cpp \
     src/ParkingModel.cpp \
-    src/Storage.cpp \
     src/JSONRequest.cpp \
     src/SortedParkingListModel.cpp \
     src/FavoritesStorage.cpp \
@@ -43,11 +42,7 @@ TRANSLATIONS += translations/StrasPark-de.ts
 HEADERS += \
     src/ParkingListModel.h \
     src/ParkingModel.h \
-    src/Storage.h \
     src/JSONRequest.h \
     src/SortedParkingListModel.h \
     src/FavoritesStorage.h \
     src/Controller.h
-
-QT += \
-    sql
