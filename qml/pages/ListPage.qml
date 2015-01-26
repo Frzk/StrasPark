@@ -61,11 +61,7 @@ Page {
 
         PullDownMenu {
             busy: isRefreshing  // From C++
-
-            MenuItem {
-                text: qsTr("About")
-                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-            }
+            quickSelect: true
 
             MenuItem {
                 enabled: !isRefreshing      // From C++
