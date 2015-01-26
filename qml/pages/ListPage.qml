@@ -49,7 +49,7 @@ Page {
         header: PageHeader {
             title: qsTr("StrasPark")
         }
-        model: parkingListModel // Coming from C++
+        model: parkingListModel // From C++
         section {
             criteria: ViewSection.FullString
             delegate: SectionHeader {
@@ -60,9 +60,21 @@ Page {
 
 
         PullDownMenu {
+            busy: isRefreshing  // From C++
+
             MenuItem {
                 text: qsTr("About")
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+            }
+
+            MenuItem {
+                enabled: !isRefreshing      // From C++
+                text: qsTr("Refresh")
+                onClicked: triggerUpdate()  // From C++
+            }
+
+            MenuLabel {
+                text: isRefreshing ? qsTr("Updating...") : (lastUpdate ? qsTr("Updated %1").arg(lastUpdate) : qsTr("No data."))  // C++
             }
         }
 

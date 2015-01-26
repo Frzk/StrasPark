@@ -18,6 +18,9 @@ class Controller : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
+    Q_PROPERTY(QString lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
+
     public:
         explicit Controller(QObject *parent = 0);
 
@@ -25,20 +28,32 @@ class Controller : public QObject
 
         SortedParkingListModel*             model() const;
         static QHash<int, QJsonObject>      jsonArrayToHashMap(const QJsonArray &a);
+        bool                                canRefresh() const;
+        bool                                isRefreshing() const;
+        QString                             lastUpdate() const;
+
+        Q_INVOKABLE void                    triggerUpdate();
 
     private:
+        static const int            refreshInterval = 180;  // Only allow refresh after 3 minutes.
         SortedParkingListModel      *m_model;
         FavoritesStorage            *m_fav;
         JSONRequest                 *m_req1;
         JSONRequest                 *m_req2;
+        bool                        m_isRefreshing;
+        QString                     m_refreshDate;
+        QDateTime                   m_lastSuccessfulRefresh;
 
     signals:
         void    modelFilled();
+        void    isRefreshingChanged();
+        void    lastUpdateChanged();
 
     private slots:
         void    fillModel(const QJsonDocument &d);
         void    refresh(const QJsonDocument &d);
         void    updateData();
+        void    handleNetworkError(const QNetworkReply::NetworkError &errcode);
         bool    updateFavorite(int id, bool value);
 };
 

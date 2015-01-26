@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
     Controller *controller = new Controller(app);
 
     view->rootContext()->setContextProperty("parkingListModel", controller->model());
+    view->rootContext()->setContextObject(controller);
+
     view->setSource(SailfishApp::pathTo("qml/StrasPark.qml"));
     view->showFullScreen();
 
