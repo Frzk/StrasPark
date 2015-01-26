@@ -61,11 +61,7 @@ Page {
 
         PullDownMenu {
             busy: isRefreshing  // From C++
-
-            MenuItem {
-                text: qsTr("About")
-                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-            }
+            quickSelect: true
 
             MenuItem {
                 enabled: !isRefreshing      // From C++
@@ -76,6 +72,12 @@ Page {
             MenuLabel {
                 text: isRefreshing ? qsTr("Updating...") : (lastUpdate ? qsTr("Updated %1").arg(lastUpdate) : qsTr("No data."))  // C++
             }
+        }
+
+        ViewPlaceholder {
+            enabled: view.count == 0
+            hintText: qsTr("Pull to refresh.")
+            text: qsTr("No data !")
         }
 
         VerticalScrollDecorator {}

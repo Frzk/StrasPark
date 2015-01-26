@@ -27,7 +27,6 @@ OTHER_FILES += qml/StrasPark.qml \
     qml/components/ListDelegate.qml \
     qml/data/database.js \
     qml/pages/ListPage.qml \
-    qml/pages/AboutPage.qml \
     rpm/StrasPark.changes.in \
     rpm/StrasPark.spec \
     rpm/StrasPark.yaml \
