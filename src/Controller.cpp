@@ -46,6 +46,12 @@ bool Controller::isRefreshing() const
     return this->m_isRefreshing;
 }
 
+bool Controller::canRefresh() const
+{
+    QDateTime now = QDateTime::currentDateTimeUtc();
+    return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > Controller::refreshInterval);
+}
+
 void Controller::triggerUpdate()
 {
     this->updateData();
@@ -54,12 +60,20 @@ void Controller::triggerUpdate()
 void Controller::updateData()
 {
     if(this->model()->rowCount() > 0)
-        this->m_req2->request(ParkingListModel::source2);
+    {
+        if(this->canRefresh())
+        {
+            this->m_req2->request(ParkingListModel::source2);
+            this->m_isRefreshing = true;
+            emit isRefreshingChanged();
+        }
+    }
     else
+    {
         this->m_req1->request(ParkingListModel::source1);
-
-    this->m_isRefreshing = true;
-    emit isRefreshingChanged();
+        this->m_isRefreshing = true;
+        emit isRefreshingChanged();
+    }
 }
 
 void Controller::fillModel(const QJsonDocument &d)
@@ -108,8 +122,13 @@ void Controller::refresh(const QJsonDocument &d)
 
     if(v != QJsonValue::Undefined)
     {
+        // Update lastSuccessfulRefresh to the current date + time so we can prevent abusive refresh.
+        this->m_lastSuccessfulRefresh = QDateTime::currentDateTimeUtc();
+
+        // Transform JSON to QHash for a quicker access.
         QHash<int, QJsonObject> values = Controller::jsonArrayToHashMap(v.toArray());
 
+        // Actually update the data.
         for(int i=0 ; i<this->m_model->model()->rowCount() ; i++)
         {
             QModelIndex idx = this->m_model->model()->index(i, 0);
