@@ -74,6 +74,12 @@ Page {
             }
         }
 
+        ViewPlaceholder {
+            enabled: view.count == 0
+            hintText: qsTr("Pull to refresh.")
+            text: qsTr("No data !")
+        }
+
         VerticalScrollDecorator {}
     }
 }
