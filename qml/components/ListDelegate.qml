@@ -23,6 +23,7 @@ ListItem {
      *
      * @param   string  status  Status of the parking lot, as given by the JSON source
      *                          (can be either "status_1", "status_2", "status_3" or "status_4").
+     *                          (aww...and sometimes we get a "status_0" which isn't documented).
      *
      * @return  string
      */
@@ -32,6 +33,9 @@ ListItem {
 
         switch(status)
         {
+            case "status_0":
+                r = qsTr("Unknown");
+                break;
             case "status_2":
                 r = qsTr("Full");
                 break;
