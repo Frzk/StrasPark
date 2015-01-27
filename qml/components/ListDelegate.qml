@@ -124,7 +124,7 @@ ListItem {
         font {
             pixelSize: Theme.fontSizeExtraSmall
         }
-        text: qsTr("%1 free places (%2)").arg(free).arg(total)
+        text: qsTr("%Ln free place(s) (%L1)", "", free).arg(total)
     }
 
     Component {
