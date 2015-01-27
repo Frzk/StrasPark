@@ -59,6 +59,14 @@ Page {
         }
 
 
+        BusyIndicator {
+            id: busyIndicator
+
+            anchors.centerIn: parent
+            running: view.count==0 && isRefreshing
+            size: BusyIndicatorSize.Large
+        }
+
         PullDownMenu {
             busy: isRefreshing  // From C++
             quickSelect: true
@@ -75,7 +83,7 @@ Page {
         }
 
         ViewPlaceholder {
-            enabled: view.count == 0
+            enabled: view.count == 0 && !isRefreshing
             hintText: qsTr("Pull to refresh.")
             text: qsTr("No data !")
         }
