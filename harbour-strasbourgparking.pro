@@ -33,6 +33,7 @@ SOURCES += src/StrasbourgParking.cpp \
 OTHER_FILES += qml/StrasbourgParking.qml \
     qml/cover/CoverPage.qml \
     qml/components/ListDelegate.qml \
+    qml/components/StatusIndicator.qml \
     qml/pages/ListPage.qml \
     rpm/harbour-strasbourgparking.changes.in \
     rpm/harbour-strasbourgparking.spec \
