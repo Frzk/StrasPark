@@ -31,22 +31,82 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../components"
+
 CoverBackground {
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: qsTr("My Cover")
+
+    CoverPlaceholder {
+        text: qsTr("Add Favorites")
+        visible: false
+    }
+
+    Column
+    {
+        anchors {
+            fill: parent
+            leftMargin: Theme.paddingLarge
+            rightMargin: Theme.paddingLarge
+            topMargin: Theme.paddingLarge
+        }
+        spacing: Theme.paddingLarge
+
+        Label {
+            id: parkingName
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+            }
+            color: Theme.primaryColor
+            font {
+                pixelSize: Theme.fontSizeMedium
+            }
+            text: "Halles P2 Sebastopol"
+            truncationMode: TruncationMode.Fade
+            width: parent.width - ( 2 * Theme.paddingLarge) // Set a width so that wrapMode works.
+            wrapMode: Text.WordWrap
+        }
+
+        Label {
+            id: statusLabel
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+            }
+            color: Theme.highlightColor
+            horizontalAlignment: Text.AlignHCenter
+            text: "Open"
+        }
+
+        Label {
+            id: freePlaces
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+            }
+            color: Theme.primaryColor
+            font {
+                pixelSize: Theme.fontSizeHuge
+            }
+            horizontalAlignment: Text.AlignHCenter
+            text: "127"
+        }
     }
 
     CoverActionList {
         id: coverAction
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-next"
+            iconSource: "image://theme/icon-cover-refresh"
+            onTriggered: {
+                triggerUpdate()
+            }
         }
 
         CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
+            iconSource: "image://theme/icon-cover-next"
+            onTriggered: {
+                console.log("Next !")
+            }
         }
     }
 }
