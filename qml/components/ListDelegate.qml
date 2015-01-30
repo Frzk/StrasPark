@@ -50,6 +50,26 @@ ListItem {
         return r;
     }
 
+    function getColor(status)
+    {
+        var r = Theme.secondaryColor;      // Unknown / Unavailable
+
+        switch(status)
+        {
+            case "status_1":    // Open
+                r = "#009900";
+                break;
+            case "status_2":    // Full
+                r = "#990000";
+                break;
+            case "status_4":    // Closed
+                r = "#000000";
+                break;
+        }
+
+        return r;
+    }
+
     /**
      * Returns true if the parking is open and not full, false otherwise.
      *
@@ -67,28 +87,13 @@ ListItem {
     menu: contextMenu
 
 
-    Image {
-        id: favIcon
-
-        anchors {
-            verticalCenter: nameLabel.verticalCenter
-            left: parent.left
-            leftMargin: Theme.paddingLarge
-        }
-        //color: highlighted ? Theme.hightlightColor : Theme.primaryColor
-        height: Theme.iconSizeSmall
-        source: "image://theme/icon-s-favorite"
-        visible: isFavorite
-        width: height
-    }
-
     Label {
         id: nameLabel
 
         anchors {
-            left: isFavorite ? favIcon.right : parent.left
+            left: parent.left
+            leftMargin: Theme.paddingLarge
             right: statusLabel.left
-            leftMargin: isFavorite ? Theme.paddingMedium : Theme.paddingLarge
             rightMargin: Theme.paddingLarge
         }
         color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
@@ -102,8 +107,8 @@ ListItem {
 
         anchors {
             baseline: nameLabel.baseline
-            right: parent.right
-            rightMargin: Theme.paddingLarge
+            right: statusIndicator.left
+            rightMargin: Theme.paddingMedium
         }
         color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
                               : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
@@ -114,15 +119,26 @@ ListItem {
         text: getStatus(status)
     }
 
+    StatusIndicator {
+        id: statusIndicator
+
+        anchors {
+            right: parent.right
+            rightMargin: Theme.paddingLarge
+            verticalCenter: statusLabel.verticalCenter
+        }
+        color: getColor(status)
+    }
+
     Label {
         id: occupation
 
         anchors {
             left: parent.left
-            right: parent.right
-            top: nameLabel.bottom
             leftMargin: Theme.paddingLarge
+            right: parent.right
             rightMargin: Theme.paddingLarge
+            top: nameLabel.bottom
         }
         color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
         font {
