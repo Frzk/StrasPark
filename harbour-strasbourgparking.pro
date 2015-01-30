@@ -10,33 +10,9 @@
 #   - translation filenames have to be changed
 
 # The name of your application
-TARGET = StrasPark
+TARGET = harbour-strasbourgparking
 
 CONFIG += sailfishapp
-
-SOURCES += src/StrasPark.cpp \
-    src/ParkingListModel.cpp \
-    src/ParkingModel.cpp \
-    src/JSONRequest.cpp \
-    src/SortedParkingListModel.cpp \
-    src/FavoritesStorage.cpp \
-    src/Controller.cpp
-
-OTHER_FILES += qml/StrasPark.qml \
-    qml/cover/CoverPage.qml \
-    qml/components/ListDelegate.qml \
-    qml/data/database.js \
-    qml/pages/ListPage.qml \
-    rpm/StrasPark.changes.in \
-    rpm/StrasPark.spec \
-    rpm/StrasPark.yaml \
-    translations/*.ts \
-    StrasPark.desktop
-
-# to disable building translations every time, comment out the
-# following CONFIG line
-CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/StrasPark-de.ts
 
 HEADERS += \
     src/ParkingListModel.h \
@@ -45,3 +21,26 @@ HEADERS += \
     src/SortedParkingListModel.h \
     src/FavoritesStorage.h \
     src/Controller.h
+
+SOURCES += src/StrasbourgParking.cpp \
+    src/ParkingListModel.cpp \
+    src/ParkingModel.cpp \
+    src/JSONRequest.cpp \
+    src/SortedParkingListModel.cpp \
+    src/FavoritesStorage.cpp \
+    src/Controller.cpp
+
+OTHER_FILES += qml/StrasbourgParking.qml \
+    qml/cover/CoverPage.qml \
+    qml/components/ListDelegate.qml \
+    qml/pages/ListPage.qml \
+    rpm/harbour-strasbourgparking.changes.in \
+    rpm/harbour-strasbourgparking.spec \
+    rpm/harbour-strasbourgparking.yaml \
+    translations/*.ts \
+    harbour-strasbourgparking.desktop
+
+# to disable building translations every time, comment out the
+# following CONFIG line
+CONFIG += sailfishapp_i18n
+TRANSLATIONS += translations/StrasbourgParking.ts

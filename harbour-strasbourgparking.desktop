@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=harbour-strasbourgparking
+Exec=StrasbourgParking
+Name=StrasbourgParking
+Name[en]=Parking lots in Strasbourg
+Name[fr]=Parkings à Strasbourg

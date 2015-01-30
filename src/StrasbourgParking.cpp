@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication *app = SailfishApp::application(argc, argv);
     app->setOrganizationName("org.kubler");
-    app->setApplicationName("StrasPark");
+    app->setApplicationName("StrasbourgParking");
 
     QQuickView *view = SailfishApp::createView();
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     view->rootContext()->setContextProperty("parkingListModel", controller->model());
     view->rootContext()->setContextObject(controller);
 
-    view->setSource(SailfishApp::pathTo("qml/StrasPark.qml"));
+    view->setSource(SailfishApp::pathTo("qml/StrasbourgParking.qml"));
     view->showFullScreen();
 
     return app->exec();

@@ -34,6 +34,15 @@ import Sailfish.Silica 1.0
 import "../components"
 
 
+/**
+ * The following are made available via C++ and usable :
+ *
+ *  - parkingListModel :    the data model.
+ *  - isRefreshing :        true when we are gathering the status of parking lots.
+ *  - triggerUpdate() :     call this one whenever you want to refresh the data.
+ *
+ */
+
 Page {
     id: page
 
@@ -47,9 +56,9 @@ Page {
         }
         delegate: ListDelegate {}
         header: PageHeader {
-            title: qsTr("StrasPark")
+            title: qsTr("Parking lots in Strasbourg")
         }
-        model: parkingListModel // From C++
+        model: parkingListModel
         section {
             criteria: ViewSection.FullString
             delegate: SectionHeader {
@@ -68,13 +77,13 @@ Page {
         }
 
         PullDownMenu {
-            busy: isRefreshing  // From C++
+            busy: isRefreshing
             quickSelect: true
 
             MenuItem {
-                enabled: !isRefreshing      // From C++
+                enabled: !isRefreshing
                 text: qsTr("Refresh")
-                onClicked: triggerUpdate()  // From C++
+                onClicked: triggerUpdate()
             }
 
             MenuLabel {
