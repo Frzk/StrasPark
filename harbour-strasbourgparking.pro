@@ -35,6 +35,7 @@ OTHER_FILES += qml/StrasbourgParking.qml \
     qml/components/ListDelegate.qml \
     qml/components/StatusIndicator.qml \
     qml/pages/ListPage.qml \
+    qml/pragma/Helpers.js \
     rpm/harbour-strasbourgparking.changes.in \
     rpm/harbour-strasbourgparking.spec \
     rpm/harbour-strasbourgparking.yaml \

@@ -64,7 +64,7 @@ ListItem {
             rightMargin: Theme.paddingLarge
             verticalCenter: statusLabel.verticalCenter
         }
-        color: Helpers.getColor(status)
+        color: Helpers.getColor(status) ? Helpers.getColor(status) : Theme.secondaryColor
     }
 
     Label {
