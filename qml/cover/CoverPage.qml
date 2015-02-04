@@ -32,8 +32,12 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import "../components"
+import "../pragma/Helpers.js" as Helpers
 
 CoverBackground {
+
+    property var current;
+
 
     CoverPlaceholder {
         text: qsTr("Add Favorites")
@@ -44,11 +48,11 @@ CoverBackground {
     {
         anchors {
             fill: parent
-            leftMargin: Theme.paddingLarge
-            rightMargin: Theme.paddingLarge
+            leftMargin: Theme.paddingMedium
+            rightMargin: Theme.paddingMedium
             topMargin: Theme.paddingLarge
         }
-        spacing: Theme.paddingLarge
+        spacing: Theme.paddingMedium
 
         Label {
             id: parkingName
@@ -60,7 +64,9 @@ CoverBackground {
             font {
                 pixelSize: Theme.fontSizeMedium
             }
-            text: "Halles P2 Sebastopol"
+            horizontalAlignment: Text.AlignHCenter
+            maximumLineCount: 3
+            text: Helpers.getName(current.name)
             truncationMode: TruncationMode.Fade
             width: parent.width - ( 2 * Theme.paddingLarge) // Set a width so that wrapMode works.
             wrapMode: Text.WordWrap
@@ -73,8 +79,11 @@ CoverBackground {
                 horizontalCenter: parent.horizontalCenter
             }
             color: Theme.highlightColor
+            font {
+                pixelSize: Theme.fontSizeSmall
+            }
             horizontalAlignment: Text.AlignHCenter
-            text: "Open"
+            text: Helpers.getStatus(current.status)
         }
 
         Label {
@@ -88,7 +97,7 @@ CoverBackground {
                 pixelSize: Theme.fontSizeHuge
             }
             horizontalAlignment: Text.AlignHCenter
-            text: "127"
+            text: current.free
         }
     }
 
@@ -98,17 +107,15 @@ CoverBackground {
         CoverAction {
             iconSource: "image://theme/icon-cover-refresh"
             onTriggered: {
-                triggerUpdate()
+                triggerUpdate();
             }
         }
 
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
             onTriggered: {
-                console.log("Next !")
+                current = nextFavorite();
             }
         }
     }
 }
-
-
