@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import "../pragma/Helpers.js" as Helpers
+
 
 ListItem {
     id: listDelegate
@@ -18,71 +20,6 @@ ListItem {
         }, 3000);
     }
 
-    /**
-     * Returns the status of a parking lot into a human-firendly text.
-     *
-     * @param   string  status  Status of the parking lot, as given by the JSON source
-     *                          (can be either "status_1", "status_2", "status_3" or "status_4").
-     *                          (aww...and sometimes we get a "status_0" which isn't documented).
-     *
-     * @return  string
-     */
-    function getStatus(status)
-    {
-        var r = qsTr("Open");
-
-        switch(status)
-        {
-            case "status_0":
-                r = qsTr("Unknown");
-                break;
-            case "status_2":
-                r = qsTr("Full");
-                break;
-            case "status_3":
-                r = qsTr("Unavailable");
-                break;
-            case "status_4":
-                r = qsTr("Closed");
-                break;
-        }
-
-        return r;
-    }
-
-    function getColor(status)
-    {
-        var r = Theme.secondaryColor;      // Unknown / Unavailable
-
-        switch(status)
-        {
-            case "status_1":    // Open
-                r = "#009900";
-                break;
-            case "status_2":    // Full
-                r = "#990000";
-                break;
-            case "status_4":    // Closed
-                r = "#000000";
-                break;
-        }
-
-        return r;
-    }
-
-    /**
-     * Returns true if the parking is open and not full, false otherwise.
-     *
-     * @param   string  status  Status of the parking lot, as given by the JSON source
-     *                          (can be either "status_1", "status_2", "status_3" or "status_4").
-     *
-     * @return  string
-     */
-    function isOpen(status)
-    {
-        return status === "status_1";
-    }
-
 
     menu: contextMenu
 
@@ -96,9 +33,9 @@ ListItem {
             right: statusLabel.left
             rightMargin: Theme.paddingLarge
         }
-        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+        color: Helpers.isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
                               : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
-        text: (isRelay ? "P+R " : "") + name
+        text: Helpers.getName(name, isRelay)
         truncationMode: TruncationMode.Fade
     }
 
@@ -110,13 +47,13 @@ ListItem {
             right: statusIndicator.left
             rightMargin: Theme.paddingMedium
         }
-        color: isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
+        color: Helpers.isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
                               : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
         font {
             pixelSize: Theme.fontSizeExtraSmall
         }
         horizontalAlignment: Text.AlignRight
-        text: getStatus(status)
+        text: Helpers.getStatus(status)
     }
 
     StatusIndicator {
@@ -127,7 +64,7 @@ ListItem {
             rightMargin: Theme.paddingLarge
             verticalCenter: statusLabel.verticalCenter
         }
-        color: getColor(status)
+        color: Helpers.getColor(status)
     }
 
     Label {
