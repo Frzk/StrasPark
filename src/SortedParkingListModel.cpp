@@ -56,3 +56,21 @@ void SortedParkingListModel::markAsFavorite(const int index, const bool isFav)
     QModelIndex idx = this->mapToSource(this->index(index, 0));
     this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
 }
+
+QVariantMap SortedParkingListModel::get(const int row) const
+{
+    QVariantMap r;
+
+    QModelIndex idx = this->index(row, 0);
+    QHash<int, QByteArray> roles = this->model()->roleNames();
+
+    QHash<int, QByteArray>::const_iterator i = roles.constBegin();
+
+    while(i != roles.constEnd())
+    {
+        r[i.value()] = this->data(idx, i.key());
+        i++;
+    }
+
+    return r;
+}

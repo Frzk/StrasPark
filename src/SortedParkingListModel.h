@@ -23,6 +23,7 @@ class SortedParkingListModel : public QSortFilterProxyModel
 
         // METHODS :
         ParkingListModel*   model() const;
+        QVariantMap         get(const int row) const;
 
     private:
         ParkingListModel    *m_model;

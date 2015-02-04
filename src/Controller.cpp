@@ -8,6 +8,7 @@ Controller::Controller(QObject *parent) :
     this->m_req1 = new JSONRequest(this);
     this->m_req2 = new JSONRequest(this);
     this->m_isRefreshing = false;
+    this->m_coverFavoriteIndex = -1;
 
     this->m_fav->load();
 
@@ -52,10 +53,30 @@ bool Controller::canRefresh() const
     return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > Controller::refreshInterval);
 }
 
+// PUBLIC SLOTS
 void Controller::triggerUpdate()
 {
     this->updateData();
 }
+
+QVariantMap Controller::nextFavorite()
+{
+    QVariantMap r;
+
+    if(this->m_fav->get().count() > 0)
+    {
+        int nextIndex = this->m_coverFavoriteIndex + 1;
+
+        if(!this->m_model->get(nextIndex).value("isFavorite").toBool())
+            nextIndex = 0;
+
+        r = this->m_model->get(nextIndex);
+        this->m_coverFavoriteIndex = nextIndex;
+    }
+
+    return r;
+}
+
 
 void Controller::updateData()
 {

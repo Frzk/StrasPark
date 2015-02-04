@@ -32,8 +32,6 @@ class Controller : public QObject
         bool                                isRefreshing() const;
         QString                             lastUpdate() const;
 
-        Q_INVOKABLE void                    triggerUpdate();
-
     private:
         static const int            refreshInterval = 180;  // Only allow refresh after 3 minutes.
         SortedParkingListModel      *m_model;
@@ -41,6 +39,7 @@ class Controller : public QObject
         JSONRequest                 *m_req1;
         JSONRequest                 *m_req2;
         bool                        m_isRefreshing;
+        int                         m_coverFavoriteIndex;
         QString                     m_refreshDate;
         QDateTime                   m_lastSuccessfulRefresh;
 
@@ -48,6 +47,10 @@ class Controller : public QObject
         void    modelFilled();
         void    isRefreshingChanged();
         void    lastUpdateChanged();
+
+    public slots:
+        void        triggerUpdate();
+        QVariantMap nextFavorite();
 
     private slots:
         void    fillModel(const QJsonDocument &d);
