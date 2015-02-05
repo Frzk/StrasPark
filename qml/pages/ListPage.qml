@@ -47,6 +47,9 @@ Page {
     id: page
 
 
+    property alias view: view
+
+
     SilicaListView {
         id: view
 
@@ -58,6 +61,7 @@ Page {
         header: PageHeader {
             title: qsTr("Parking lots in Strasbourg")
         }
+        keyNavigationWraps: true;
         model: parkingListModel
         section {
             criteria: ViewSection.FullString

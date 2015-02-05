@@ -35,8 +35,10 @@ import "../components"
 import "../pragma/Helpers.js" as Helpers
 
 CoverBackground {
+    id: cover
 
-    property var current;
+
+    property var current    // ListView currentItem : we get the values from it.
 
 
     CoverPlaceholder {
@@ -55,8 +57,6 @@ CoverBackground {
         spacing: Theme.paddingMedium
 
         Label {
-            id: parkingName
-
             anchors {
                 horizontalCenter: parent.horizontalCenter
             }
@@ -66,15 +66,13 @@ CoverBackground {
             }
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 3
-            text: Helpers.getName(current.name)
+            text: current.parkingName
             truncationMode: TruncationMode.Fade
             width: parent.width - ( 2 * Theme.paddingLarge) // Set a width so that wrapMode works.
             wrapMode: Text.WordWrap
         }
 
         Label {
-            id: statusLabel
-
             anchors {
                 horizontalCenter: parent.horizontalCenter
             }
@@ -83,12 +81,10 @@ CoverBackground {
                 pixelSize: Theme.fontSizeSmall
             }
             horizontalAlignment: Text.AlignHCenter
-            text: Helpers.getStatus(current.status)
+            text: current.parkingStatus
         }
 
         Label {
-            id: freePlaces
-
             anchors {
                 horizontalCenter: parent.horizontalCenter
             }
@@ -97,7 +93,7 @@ CoverBackground {
                 pixelSize: Theme.fontSizeHuge
             }
             horizontalAlignment: Text.AlignHCenter
-            text: current.free
+            text: current.freePlaces
         }
     }
 
@@ -114,8 +110,26 @@ CoverBackground {
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
             onTriggered: {
-                current = nextFavorite();
+                //FIXME: cycle through favorites only.
+                pageStack.currentPage.view.incrementCurrentIndex();
+
+                console.log("currentIndex :", pageStack.currentPage.view.currentIndex);
+                console.log("currentItem :", pageStack.currentPage.view.currentItem);
+                console.log("current :", current);
             }
         }
+    }
+
+    /*
+     * We bind values showed on the cover directly to the corresponding ListPage.view delegate.
+     * This allow us to get updated values on the cover easily :
+     *   A signal triggers the data update.
+     *   The model is updated, and so are the ListPage.view delegates.
+     *   Finally, the (bounded) values on the cover are also updated.
+     */
+    Binding {
+        target: cover
+        property: "current"
+        value: pageStack.currentPage.view.currentItem
     }
 }
