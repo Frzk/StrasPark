@@ -8,12 +8,6 @@ ListItem {
     id: listDelegate
 
 
-    // These properties are also used in the CoverPage.
-    property int freePlaces: free
-    property string parkingStatus: Helpers.getStatus(status)
-    property string parkingName: Helpers.getName(name, isRelay)
-
-
     function markAsFavorite(f)
     {
         var s = qsTr("Adding to Favorites");
@@ -41,7 +35,7 @@ ListItem {
         }
         color: Helpers.isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
                               : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
-        text: parkingName //Helpers.getName(name, isRelay)
+        text: Helpers.getName(name, isRelay)
         truncationMode: TruncationMode.Fade
     }
 
@@ -59,7 +53,7 @@ ListItem {
             pixelSize: Theme.fontSizeExtraSmall
         }
         horizontalAlignment: Text.AlignRight
-        text: parkingStatus //Helpers.getStatus(status)
+        text: Helpers.getStatus(status)
     }
 
     StatusIndicator {
