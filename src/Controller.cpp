@@ -52,10 +52,23 @@ bool Controller::canRefresh() const
     return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > Controller::refreshInterval);
 }
 
+
+// Q_INVOKABLE
+bool Controller::isFavorite(const int row) const
+{
+    QModelIndex idx = this->m_model->index(row, 0);
+    bool r = this->m_model->data(idx, Qt::UserRole + 9).toBool();
+
+    return r;
+}
+
+
+// PUBLIC SLOTS
 void Controller::triggerUpdate()
 {
     this->updateData();
 }
+
 
 void Controller::updateData()
 {
@@ -143,6 +156,8 @@ void Controller::refresh(const QJsonDocument &d)
             this->m_model->model()->setData(idx, QVariant(freePlaces), Qt::UserRole + 4);   // FreeRole
             this->m_model->model()->setData(idx, QVariant(totalPlaces), Qt::UserRole + 5);  // TotalRole
         }
+
+        emit dataRefreshed();
     }
     //else
     //FIXME

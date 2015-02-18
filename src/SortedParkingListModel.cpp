@@ -46,13 +46,29 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
     return r;
 }
 
-void SortedParkingListModel::update()
+void SortedParkingListModel::markAsFavorite(const int row, const bool isFav)
 {
-    qDebug() << "Triggered from QML.";
+    QModelIndex idx = this->index(row, 0);
+    bool success = this->setData(idx, isFav, Qt::UserRole + 9);
+
+    //QModelIndex idx = this->mapToSource(this->index(row, 0));
+    //bool success = this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
+
+    if(success)
+        emit favoriteChanged(row, isFav);
 }
 
-void SortedParkingListModel::markAsFavorite(const int index, const bool isFav)
+QVariantMap SortedParkingListModel::getParking(const int row) const
 {
-    QModelIndex idx = this->mapToSource(this->index(index, 0));
-    this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
+    QVariantMap r;
+    QModelIndex idx = this->index(row, 0);
+    QHashIterator<int, QByteArray> i(this->roleNames());
+
+    while(i.hasNext())
+    {
+        i.next();
+        r.insert(i.value(), this->data(idx, i.key()));
+    }
+
+    return r;
 }
