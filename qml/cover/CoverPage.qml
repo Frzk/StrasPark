@@ -34,16 +34,73 @@ import Sailfish.Silica 1.0
 import "../components"
 import "../pragma/Helpers.js" as Helpers
 
+
+/**
+ * The following are made available through C++ (Q_PROPERTY or Q_INVOKABLE) :
+ *  - parkingListModel :    the data model.
+ *  - isRefreshing :        true when we are gathering the status of parking lots.
+ *  - isFavorite(row) :     true if the item at given row is a Favorite.
+ *  - triggerUpdate() :     call this one whenever you want to refresh the data.
+ */
+
 CoverBackground {
     id: cover
 
 
-    property var current    // ListView currentItem : we get the values from it.
+    property int currentIndex: -1
+    property var current: null
+    property bool refreshing: isRefreshing
+
+
+    signal refresh;
+
+
+    function next() {
+        //FIXME
+        var newIndex = -1;
+        var n = currentIndex + 1;
+
+        if(isFavorite(n))
+            newIndex = n;
+        else
+            if(currentIndex >= 0)
+                newIndex = 0;
+
+        currentIndex = newIndex;
+        refresh();
+    }
+
+    function updateCurrentIndex(row, fav) {
+        //FIXME
+        if(fav) // Added a new Favorite
+        {
+            currentIndex = 0;
+        }
+        else    // Removed a Favorite
+        {
+            if(row <= currentIndex)
+            {
+                if(row > 0)
+                    currentIndex--;
+                else
+                    if(isFavorite(0))
+                        currentIndex = 0;
+                    else
+                        currentIndex = -1;
+            }
+        }
+
+        refresh();
+    }
+
+    function updateCurrent() {
+        current = currentIndex >= 0 ? parkingListModel.getParking(currentIndex) : null;
+    }
 
 
     CoverPlaceholder {
-        text: qsTr("Add Favorites")
-        visible: false
+        text: qsTr("Mark some parking lots as Favorites.")
+        visible: !current
     }
 
     Column
@@ -66,7 +123,7 @@ CoverBackground {
             }
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 3
-            text: current.parkingName
+            text: current ? Helpers.getName(current.name, current.isRelay) : ""
             truncationMode: TruncationMode.Fade
             width: parent.width - ( 2 * Theme.paddingLarge) // Set a width so that wrapMode works.
             wrapMode: Text.WordWrap
@@ -81,7 +138,7 @@ CoverBackground {
                 pixelSize: Theme.fontSizeSmall
             }
             horizontalAlignment: Text.AlignHCenter
-            text: current.parkingStatus
+            text: current ? Helpers.getStatus(current.status) : ""
         }
 
         Label {
@@ -93,12 +150,14 @@ CoverBackground {
                 pixelSize: Theme.fontSizeHuge
             }
             horizontalAlignment: Text.AlignHCenter
-            text: current.freePlaces
+            text: current ? current.free : ""
         }
     }
 
     CoverActionList {
         id: coverAction
+
+        enabled: current
 
         CoverAction {
             iconSource: "image://theme/icon-cover-refresh"
@@ -110,26 +169,22 @@ CoverBackground {
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
             onTriggered: {
-                //FIXME: cycle through favorites only.
-                pageStack.currentPage.view.incrementCurrentIndex();
-
-                console.log("currentIndex :", pageStack.currentPage.view.currentIndex);
-                console.log("currentItem :", pageStack.currentPage.view.currentItem);
-                console.log("current :", current);
+                next();
             }
         }
     }
 
-    /*
-     * We bind values showed on the cover directly to the corresponding ListPage.view delegate.
-     * This allow us to get updated values on the cover easily :
-     *   A signal triggers the data update.
-     *   The model is updated, and so are the ListPage.view delegates.
-     *   Finally, the (bounded) values on the cover are also updated.
-     */
-    Binding {
-        target: cover
-        property: "current"
-        value: pageStack.currentPage.view.currentItem
+    onRefreshingChanged: {
+        if(!refreshing)
+            updateCurrent();
+    }
+
+    onRefresh: {
+        updateCurrent();
+    }
+
+    Component.onCompleted: {
+        pageStack.currentPage.view.onCountChanged.connect(next);
+        parkingListModel.favoriteChanged.connect(updateCurrentIndex);
     }
 }

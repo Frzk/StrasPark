@@ -31,6 +31,7 @@ class Controller : public QObject
         bool                                canRefresh() const;
         bool                                isRefreshing() const;
         QString                             lastUpdate() const;
+        Q_INVOKABLE bool                    isFavorite(const int row) const;
 
     private:
         static const int            refreshInterval = 180;  // Only allow refresh after 3 minutes.
@@ -39,18 +40,17 @@ class Controller : public QObject
         JSONRequest                 *m_req1;
         JSONRequest                 *m_req2;
         bool                        m_isRefreshing;
-        int                         m_coverFavoriteIndex;
         QString                     m_refreshDate;
         QDateTime                   m_lastSuccessfulRefresh;
 
     signals:
         void    modelFilled();
-        void    isRefreshingChanged();
-        void    lastUpdateChanged();
+        void    dataRefreshed();
+        void    isRefreshingChanged();  // Needed for isRefreshing Q_PROPERTY.
+        void    lastUpdateChanged();    // Needed for lastUpdate Q_PROPERTY.
 
     public slots:
         void        triggerUpdate();
-        QVariantMap nextFavorite();
 
     private slots:
         void    fillModel(const QJsonDocument &d);
