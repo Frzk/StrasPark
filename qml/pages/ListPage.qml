@@ -35,29 +35,32 @@ import "../components"
 
 
 /**
- * The following are made available via C++ and usable :
- *
+ * The following are made available through C++ (Q_PROPERTY or Q_INVOKABLE) :
  *  - parkingListModel :    the data model.
  *  - isRefreshing :        true when we are gathering the status of parking lots.
+ *  - lastUpdate :          Date object : last successful update date and time.
  *  - triggerUpdate() :     call this one whenever you want to refresh the data.
- *
  */
 
 Page {
     id: page
 
 
+    property alias view: view
+
+
     SilicaListView {
         id: view
-
 
         anchors {
             fill: parent
         }
+        currentIndex: -1
         delegate: ListDelegate {}
         header: PageHeader {
             title: qsTr("Parking lots in Strasbourg")
         }
+        keyNavigationWraps: true;
         model: parkingListModel
         section {
             criteria: ViewSection.FullString

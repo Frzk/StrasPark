@@ -23,14 +23,18 @@ class SortedParkingListModel : public QSortFilterProxyModel
 
         // METHODS :
         ParkingListModel*   model() const;
-        QVariantMap         get(const int row) const;
+
+        // Q_INVOKABLE :
+        Q_INVOKABLE QVariantMap     getParking(const int row) const;
 
     private:
         ParkingListModel    *m_model;
 
+    signals:
+        void                favoriteChanged(int row, bool isFav);
+
     public slots:
-        void                update();
-        void                markAsFavorite(const int index, const bool isFav);
+        void                markAsFavorite(const int row, const bool isFav);
 };
 
 #endif // SORTEDPARKINGLISTMODEL_H

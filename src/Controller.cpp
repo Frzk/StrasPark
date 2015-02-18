@@ -8,7 +8,6 @@ Controller::Controller(QObject *parent) :
     this->m_req1 = new JSONRequest(this);
     this->m_req2 = new JSONRequest(this);
     this->m_isRefreshing = false;
-    this->m_coverFavoriteIndex = -1;
 
     this->m_fav->load();
 
@@ -53,28 +52,21 @@ bool Controller::canRefresh() const
     return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > Controller::refreshInterval);
 }
 
+
+// Q_INVOKABLE
+bool Controller::isFavorite(const int row) const
+{
+    QModelIndex idx = this->m_model->index(row, 0);
+    bool r = this->m_model->data(idx, Qt::UserRole + 9).toBool();
+
+    return r;
+}
+
+
 // PUBLIC SLOTS
 void Controller::triggerUpdate()
 {
     this->updateData();
-}
-
-QVariantMap Controller::nextFavorite()
-{
-    QVariantMap r;
-
-    if(this->m_fav->get().count() > 0)
-    {
-        int nextIndex = this->m_coverFavoriteIndex + 1;
-
-        if(!this->m_model->get(nextIndex).value("isFavorite").toBool())
-            nextIndex = 0;
-
-        r = this->m_model->get(nextIndex);
-        this->m_coverFavoriteIndex = nextIndex;
-    }
-
-    return r;
 }
 
 
@@ -164,6 +156,8 @@ void Controller::refresh(const QJsonDocument &d)
             this->m_model->model()->setData(idx, QVariant(freePlaces), Qt::UserRole + 4);   // FreeRole
             this->m_model->model()->setData(idx, QVariant(totalPlaces), Qt::UserRole + 5);  // TotalRole
         }
+
+        emit dataRefreshed();
     }
     //else
     //FIXME

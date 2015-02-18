@@ -46,30 +46,28 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
     return r;
 }
 
-void SortedParkingListModel::update()
+void SortedParkingListModel::markAsFavorite(const int row, const bool isFav)
 {
-    qDebug() << "Triggered from QML.";
+    QModelIndex idx = this->index(row, 0);
+    bool success = this->setData(idx, isFav, Qt::UserRole + 9);
+
+    //QModelIndex idx = this->mapToSource(this->index(row, 0));
+    //bool success = this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
+
+    if(success)
+        emit favoriteChanged(row, isFav);
 }
 
-void SortedParkingListModel::markAsFavorite(const int index, const bool isFav)
-{
-    QModelIndex idx = this->mapToSource(this->index(index, 0));
-    this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
-}
-
-QVariantMap SortedParkingListModel::get(const int row) const
+QVariantMap SortedParkingListModel::getParking(const int row) const
 {
     QVariantMap r;
-
     QModelIndex idx = this->index(row, 0);
-    QHash<int, QByteArray> roles = this->model()->roleNames();
+    QHashIterator<int, QByteArray> i(this->roleNames());
 
-    QHash<int, QByteArray>::const_iterator i = roles.constBegin();
-
-    while(i != roles.constEnd())
+    while(i.hasNext())
     {
-        r[i.value()] = this->data(idx, i.key());
-        i++;
+        i.next();
+        r.insert(i.value(), this->data(idx, i.key()));
     }
 
     return r;
