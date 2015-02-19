@@ -90,7 +90,7 @@ Page {
             }
 
             MenuLabel {
-                text: isRefreshing ? qsTr("Updating...") : (lastUpdate ? qsTr("Updated %1").arg(lastUpdate) : qsTr("No data."))  // C++
+                text: isRefreshing ? qsTr("Updating...") : (lastUpdate ? qsTr("Updated %1").arg(Qt.formatDateTime(lastUpdate)) : qsTr("No data."))
             }
         }
 

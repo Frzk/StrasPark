@@ -19,7 +19,7 @@ class Controller : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
-    Q_PROPERTY(QString lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
+    Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
 
     public:
         explicit Controller(QObject *parent = 0);
@@ -30,7 +30,7 @@ class Controller : public QObject
         static QHash<int, QJsonObject>      jsonArrayToHashMap(const QJsonArray &a);
         bool                                canRefresh() const;
         bool                                isRefreshing() const;
-        QString                             lastUpdate() const;
+        QDateTime                           lastUpdate() const;
         Q_INVOKABLE bool                    isFavorite(const int row) const;
 
     private:
@@ -40,7 +40,6 @@ class Controller : public QObject
         JSONRequest                 *m_req1;
         JSONRequest                 *m_req2;
         bool                        m_isRefreshing;
-        QString                     m_refreshDate;
         QDateTime                   m_lastSuccessfulRefresh;
 
     signals:

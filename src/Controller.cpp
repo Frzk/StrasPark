@@ -38,9 +38,9 @@ SortedParkingListModel* Controller::model() const
     return this->m_model;
 }
 
-QString Controller::lastUpdate() const
+QDateTime Controller::lastUpdate() const
 {
-    return this->m_refreshDate;
+    return this->m_lastSuccessfulRefresh;
 }
 
 bool Controller::isRefreshing() const
@@ -128,17 +128,13 @@ void Controller::fillModel(const QJsonDocument &d)
 void Controller::refresh(const QJsonDocument &d)
 {
     QJsonObject obj = d.object();
-    //FIXME: make this a QDateTime with i18n :
-    //       also change the Q_PROPERTY accordingly.
-    this->m_refreshDate = obj.value("datatime").toString();
-    emit lastUpdateChanged();
-
     QJsonValue v = obj.value("s");
 
     if(v != QJsonValue::Undefined)
     {
         // Update lastSuccessfulRefresh to the current date + time so we can prevent abusive refresh.
         this->m_lastSuccessfulRefresh = QDateTime::currentDateTimeUtc();
+        emit lastUpdateChanged();
 
         // Transform JSON to QHash for a quicker access.
         QHash<int, QJsonObject> values = Controller::jsonArrayToHashMap(v.toArray());
