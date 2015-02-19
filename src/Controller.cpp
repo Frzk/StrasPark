@@ -16,9 +16,11 @@ Controller::Controller(QObject *parent) :
 
     QObject::connect(this->m_req1, SIGNAL(documentReady(const QJsonDocument)), this, SLOT(fillModel(const QJsonDocument)));
     QObject::connect(this->m_req1, SIGNAL(networkError(const QNetworkReply::NetworkError&)), this, SLOT(handleNetworkError(const QNetworkReply::NetworkError&)));
+    //TODO: connect jsonParsingError signal to some slot.
 
     QObject::connect(this->m_req2, SIGNAL(documentReady(const QJsonDocument)), this, SLOT(refresh(const QJsonDocument)));
     QObject::connect(this->m_req2, SIGNAL(networkError(const QNetworkReply::NetworkError&)), this, SLOT(handleNetworkError(const QNetworkReply::NetworkError&)));
+    //TODO: connect jsonParsingError signal to some slot.
 
     this->triggerUpdate();
 }

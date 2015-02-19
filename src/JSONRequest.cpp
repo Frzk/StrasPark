@@ -35,16 +35,22 @@ void JSONRequest::request(const QString &url) const
  * @param   reply   Reply received from the QNetworkAccessManager (we expect it to be a valid JSON document).
  *
  * @emit documentReady(QJsonDocument document) if the request succeeded and the document has been parsed successfully.
+ * @emit jsonParsingError(QString error) if the data could not be parsed into a QJsonDocument.
  * @emit networkError(QNetworkReply::NetworkError error) if the request failed.
  */
 void JSONRequest::handleReply(QNetworkReply *reply)
 {
+    QJsonParseError err;
+
     if(reply->error() == QNetworkReply::NoError)
     {
         QString rawData = (QString)reply->readAll();
-        QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8());
+        QJsonDocument doc = QJsonDocument::fromJson(rawData.toUtf8(), &err);
 
-        emit documentReady(doc);
+        if(!doc.isNull())
+            emit documentReady(doc);
+        else
+            emit jsonParsingError(QString("Unable to parse JSON : %1 at offset %2.").arg(err.errorString()).arg(err.offset));
     }
     else
     {

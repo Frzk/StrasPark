@@ -24,6 +24,7 @@ class JSONRequest : public QObject
 
     signals:
         void documentReady(const QJsonDocument &document);
+        void jsonParsingError(const QString &error);
         void networkError(const QNetworkReply::NetworkError &error);
 
     private slots:
