@@ -36,8 +36,6 @@ bool FavoritesStorage::load()
         r = true;
     }
 
-    qDebug() << this->m_favorites;
-
     return r;
 }
 
