@@ -73,7 +73,7 @@
     <message>
         <location filename="../qml/pages/ListPage.qml" line="61"/>
         <source>Parking lots in Strasbourg</source>
-        <translation>Parkings de Strasbourg</translation>
+        <translation>Parkings à Strasbourg</translation>
     </message>
     <message>
         <location filename="../qml/pages/ListPage.qml" line="68"/>
