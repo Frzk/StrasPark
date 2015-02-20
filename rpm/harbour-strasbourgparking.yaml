@@ -1,6 +1,6 @@
 Name: harbour-strasbourgparking
 Summary: harbour-strasbourgparking
-Version: 0.1
+Version: 1.0
 Release: 1
 # The contents of the Group field should be one of the groups listed here:
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
@@ -12,7 +12,7 @@ License: GPLv3
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |
-  Find a parking space in public parking lots of the Eurométrople of Strasbourg, France.
+  Find a parking space in public parking lots in the Eurometropolis of Strasbourg, France.
 Configure: none
 # The qtc5 builder inserts macros to allow QtCreator to have fine
 # control over qmake/make execution
@@ -38,6 +38,7 @@ Requires:
 Files:
   - '%{_bindir}'
   - '%{_datadir}/%{name}'
+  - '%{_datadir}/%{name}/translations'
   - '%{_datadir}/applications/%{name}.desktop'
   - '%{_datadir}/icons/hicolor/86x86/apps/%{name}.png'
 

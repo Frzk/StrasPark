@@ -36,13 +36,12 @@ OTHER_FILES += qml/StrasbourgParking.qml \
     qml/components/StatusIndicator.qml \
     qml/pages/ListPage.qml \
     qml/pragma/Helpers.js \
-    rpm/harbour-strasbourgparking.changes.in \
-    rpm/harbour-strasbourgparking.spec \
-    rpm/harbour-strasbourgparking.yaml \
-    translations/*.ts \
-    harbour-strasbourgparking.desktop
+    rpm/$${TARGET}.changes.in \
+    rpm/$${TARGET}.spec \
+    rpm/$${TARGET}.yaml \
+    $${TARGET}.desktop
 
-# to disable building translations every time, comment out the
-# following CONFIG line
 CONFIG += sailfishapp_i18n
-TRANSLATIONS += translations/StrasbourgParking.ts
+
+TRANSLATIONS += translations/$${TARGET}-en_EN.ts \
+                translations/$${TARGET}-fr_FR.ts

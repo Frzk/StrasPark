@@ -13,11 +13,11 @@ Name:       harbour-strasbourgparking
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    harbour-strasbourgparking
-Version:    0.1
+Version:    1.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
-URL:        https://github.com/Frzk/StrasbourgParking
+URL:        https://github.com/Frzk/harbour-strasbourgparking
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-strasbourgparking.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -28,7 +28,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
 
 %description
-Find a parking space in the public parking lots of the Eurométropole of Strasbourg, France.
+Find a parking space in public parking lots in the Eurometropolis of Strasbourg, France.
 
 
 %prep
@@ -65,6 +65,7 @@ desktop-file-install --delete-original       \
 %defattr(-,root,root,-)
 %{_bindir}
 %{_datadir}/%{name}
+%{_datadir}/%{name}/translations
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/86x86/apps/%{name}.png
 # >> files
