@@ -19,9 +19,9 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef QT_QML_DEBUG
+#include <QGuiApplication>
+#include <QQuickView>
 #include <QtQuick>
-#endif
 
 #include <sailfishapp.h>
 #include "Controller.h"
@@ -29,13 +29,12 @@
 int main(int argc, char *argv[])
 {
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
-    //QGuiApplication *app = SailfishApp::application(argc, argv);
     app->setOrganizationName("org.kubler");
     app->setApplicationName("StrasbourgParking");
 
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
-    Controller *controller = new Controller(app);
+    Controller *controller = new Controller();
 
     view->rootContext()->setContextProperty("parkingListModel", controller->model());
     view->rootContext()->setContextObject(controller);
