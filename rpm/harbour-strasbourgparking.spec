@@ -17,7 +17,7 @@ Version:    1.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
-URL:        https://github.com/Frzk/harbour-strasbourgparking
+URL:        https://github.com/Frzk/StrasbourgParking
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-strasbourgparking.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9

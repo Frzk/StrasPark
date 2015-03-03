@@ -3,13 +3,17 @@ Summary: harbour-strasbourgparking
 Version: 1.0
 Release: 1
 Group: Qt/Qt
-URL: https://github.com/Frzk/harbour-strasbourgparking
+URL: https://github.com/Frzk/StrasbourgParking
 License: GPLv3
+
 Sources:
 - '%{name}-%{version}.tar.bz2'
+
 Description: |
   Find a parking space in public parking lots in the Eurometropolis of Strasbourg, France.
+
 Configure: none
+
 Builder: qtc5
 
 PkgConfigBR:

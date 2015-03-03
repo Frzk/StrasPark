@@ -4,7 +4,7 @@
 <context>
     <name>CoverPage</name>
     <message>
-        <location filename="../qml/cover/CoverPage.qml" line="102"/>
+        <location filename="../qml/cover/CoverPage.qml" line="93"/>
         <source>Mark some parking lots as Favorites.</source>
         <translation>Mark some parking lots as Favorites.</translation>
     </message>
@@ -12,27 +12,27 @@
 <context>
     <name>Helpers</name>
     <message>
-        <location filename="../qml/pragma/Helpers.js" line="29"/>
+        <location filename="../qml/pragma/Helpers.js" line="50"/>
         <source>Open</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="../qml/pragma/Helpers.js" line="34"/>
+        <location filename="../qml/pragma/Helpers.js" line="55"/>
         <source>Unknown</source>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location filename="../qml/pragma/Helpers.js" line="37"/>
+        <location filename="../qml/pragma/Helpers.js" line="58"/>
         <source>Full</source>
         <translation>Full</translation>
     </message>
     <message>
-        <location filename="../qml/pragma/Helpers.js" line="40"/>
+        <location filename="../qml/pragma/Helpers.js" line="61"/>
         <source>Unavailable</source>
         <translation>Unavailable</translation>
     </message>
     <message>
-        <location filename="../qml/pragma/Helpers.js" line="43"/>
+        <location filename="../qml/pragma/Helpers.js" line="64"/>
         <source>Closed</source>
         <translation>Closed</translation>
     </message>
@@ -40,17 +40,17 @@
 <context>
     <name>ListDelegate</name>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="13"/>
+        <location filename="../qml/components/ListDelegate.qml" line="34"/>
         <source>Adding to Favorites</source>
         <translation>Adding to favorites</translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="16"/>
+        <location filename="../qml/components/ListDelegate.qml" line="37"/>
         <source>Removing from Favorites</source>
         <translation>Removing from favorites</translation>
     </message>
     <message numerus="yes">
-        <location filename="../qml/components/ListDelegate.qml" line="86"/>
+        <location filename="../qml/components/ListDelegate.qml" line="107"/>
         <source>%Ln free place(s) (%L1)</source>
         <translation>
             <numerusform>%Ln free place (%L1)</numerusform>
@@ -58,12 +58,12 @@
         </translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="103"/>
+        <location filename="../qml/components/ListDelegate.qml" line="124"/>
         <source>Add to favorites</source>
         <translation>Add to favorites</translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="110"/>
+        <location filename="../qml/components/ListDelegate.qml" line="131"/>
         <source>Remove from favorites</source>
         <translation>Remove from favorites</translation>
     </message>
@@ -71,47 +71,47 @@
 <context>
     <name>ListPage</name>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="61"/>
+        <location filename="../qml/pages/ListPage.qml" line="52"/>
         <source>Parking lots in Strasbourg</source>
         <translation>Parking lots in Strasbourg</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="68"/>
+        <location filename="../qml/pages/ListPage.qml" line="59"/>
         <source>Favorites</source>
         <translation>Favorites</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="68"/>
+        <location filename="../qml/pages/ListPage.qml" line="59"/>
         <source>Others</source>
         <translation>Others</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="88"/>
+        <location filename="../qml/pages/ListPage.qml" line="79"/>
         <source>Refresh</source>
         <translation>Refresh</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="93"/>
+        <location filename="../qml/pages/ListPage.qml" line="84"/>
         <source>Updating...</source>
         <translation>Updating...</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="93"/>
+        <location filename="../qml/pages/ListPage.qml" line="84"/>
         <source>Updated %1</source>
         <translation>Updated %1</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="93"/>
+        <location filename="../qml/pages/ListPage.qml" line="84"/>
         <source>No data.</source>
         <translation>No data.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="99"/>
+        <location filename="../qml/pages/ListPage.qml" line="90"/>
         <source>Pull to refresh.</source>
         <translation>Pull to refresh.</translation>
     </message>
     <message>
-        <location filename="../qml/pages/ListPage.qml" line="100"/>
+        <location filename="../qml/pages/ListPage.qml" line="91"/>
         <source>No data !</source>
         <translation>No data !</translation>
     </message>
