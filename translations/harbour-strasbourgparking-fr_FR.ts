@@ -50,7 +50,7 @@
         <translation>Suppression des favoris</translation>
     </message>
     <message numerus="yes">
-        <location filename="../qml/components/ListDelegate.qml" line="84"/>
+        <location filename="../qml/components/ListDelegate.qml" line="86"/>
         <source>%Ln free place(s) (%L1)</source>
         <translation>
             <numerusform>%Ln place libre (%L1)</numerusform>
@@ -58,12 +58,12 @@
         </translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="101"/>
+        <location filename="../qml/components/ListDelegate.qml" line="103"/>
         <source>Add to favorites</source>
         <translation>Ajouter aux favoris</translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="108"/>
+        <location filename="../qml/components/ListDelegate.qml" line="110"/>
         <source>Remove from favorites</source>
         <translation>Supprimer des favoris</translation>
     </message>
