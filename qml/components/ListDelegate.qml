@@ -24,6 +24,20 @@ ListItem {
     menu: contextMenu
 
 
+    GlassItem {
+        id: statusIndicator
+
+        anchors {
+            left: parent.left
+            leftMargin: -(width / 2)
+            verticalCenter: nameLabel.verticalCenter
+        }
+        brightness: 1.0
+        color: Helpers.getColor(status) ? Helpers.getColor(status) : Theme.secondaryColor
+        height: width
+        width: Theme.itemSizeExtraSmall
+    }
+
     Label {
         id: nameLabel
 
@@ -44,8 +58,8 @@ ListItem {
 
         anchors {
             baseline: nameLabel.baseline
-            right: statusIndicator.left
-            rightMargin: Theme.paddingMedium
+            right: parent.right
+            rightMargin: Theme.paddingLarge
         }
         color: Helpers.isOpen(status) ? (highlighted ? Theme.highlightColor : Theme.primaryColor)
                               : (highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor)
@@ -56,23 +70,11 @@ ListItem {
         text: Helpers.getStatus(status)
     }
 
-    StatusIndicator {
-        id: statusIndicator
-
-        anchors {
-            right: parent.right
-            rightMargin: Theme.paddingLarge
-            verticalCenter: statusLabel.verticalCenter
-        }
-        color: Helpers.getColor(status) ? Helpers.getColor(status) : Theme.secondaryColor
-    }
-
     Label {
         id: occupation
 
         anchors {
-            left: parent.left
-            leftMargin: Theme.paddingLarge
+            left: nameLabel.left
             right: parent.right
             rightMargin: Theme.paddingLarge
             top: nameLabel.bottom
