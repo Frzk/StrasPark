@@ -13,6 +13,7 @@ enum Roles {
 };
 
 ParkingModel::ParkingModel(QObject *parent) :
+    QObject(parent),
     m_id(-1),
     m_name(""),
     m_status("status_3"),
@@ -26,6 +27,7 @@ ParkingModel::ParkingModel(QObject *parent) :
 }
 
 ParkingModel::ParkingModel(const ParkingModel &park, QObject *parent) :
+    QObject(parent),
     m_id(park.m_id),
     m_name(park.m_name),
     m_status(park.m_status),
@@ -39,6 +41,7 @@ ParkingModel::ParkingModel(const ParkingModel &park, QObject *parent) :
 }
 
 ParkingModel::ParkingModel(int id, QString name, QString lng, QString lat, bool isRelay, bool isFavorite, QObject *parent) :
+    QObject(parent),
     m_id(id),
     m_name(name),
     m_status("status_3"),
@@ -53,7 +56,6 @@ ParkingModel::ParkingModel(int id, QString name, QString lng, QString lat, bool 
 
 ParkingModel::~ParkingModel()
 {
-
 }
 
 bool ParkingModel::operator<(const ParkingModel &other) const
