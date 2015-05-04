@@ -59,13 +59,21 @@
     </message>
     <message>
         <location filename="../qml/components/ListDelegate.qml" line="124"/>
-        <source>Add to favorites</source>
-        <translation>Ajouter aux favoris</translation>
+        <source>Remove from Favorites</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="131"/>
+        <location filename="../qml/components/ListDelegate.qml" line="124"/>
+        <source>Add to Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to favorites</source>
+        <translation type="vanished">Ajouter aux favoris</translation>
+    </message>
+    <message>
         <source>Remove from favorites</source>
-        <translation>Supprimer des favoris</translation>
+        <translation type="vanished">Supprimer des favoris</translation>
     </message>
 </context>
 <context>

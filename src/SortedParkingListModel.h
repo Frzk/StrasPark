@@ -55,7 +55,7 @@ class SortedParkingListModel : public QSortFilterProxyModel
         void                favoriteChanged(int row, bool isFav);
 
     public slots:
-        void                markAsFavorite(const int row, const bool isFav);
+        //void                markAsFavorite(const int row, const bool isFav);
 };
 
 #endif // SORTEDPARKINGLISTMODEL_H

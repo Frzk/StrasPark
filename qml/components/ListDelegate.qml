@@ -29,16 +29,16 @@ ListItem {
     id: listDelegate
 
 
-    function markAsFavorite(f)
+    function setFav()
     {
         var s = qsTr("Adding to Favorites");
 
-        if(!f)
+        if(isFavorite)
             s = qsTr("Removing from Favorites");
 
         remorseAction(s, function() {
-            ListView.view.model.markAsFavorite(index, f);
-        }, 3000);
+            isFavorite = !isFavorite;
+        }, 5000);
     }
 
 
@@ -121,17 +121,9 @@ ListItem {
             }
             */
             MenuItem {
-                text: qsTr("Add to favorites")
-                visible: !isFavorite
+                text: isFavorite ? qsTr("Remove from Favorites") : qsTr("Add to Favorites")
                 onClicked: {
-                    markAsFavorite(true)
-                }
-            }
-            MenuItem {
-                text: qsTr("Remove from favorites")
-                visible: isFavorite
-                onClicked: {
-                    markAsFavorite(false)
+                    setFav()
                 }
             }
         }
