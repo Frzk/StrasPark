@@ -67,18 +67,6 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
     return r;
 }
 
-void SortedParkingListModel::markAsFavorite(const int row, const bool isFav)
-{
-    QModelIndex idx = this->index(row, 0);
-    bool success = this->setData(idx, isFav, Qt::UserRole + 9);
-
-    //QModelIndex idx = this->mapToSource(this->index(row, 0));
-    //bool success = this->sourceModel()->setData(idx, isFav, Qt::UserRole + 9);
-
-    if(success)
-        emit favoriteChanged(row, isFav);
-}
-
 QVariantMap SortedParkingListModel::getParking(const int row) const
 {
     QVariantMap r;

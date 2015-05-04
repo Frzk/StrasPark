@@ -58,12 +58,12 @@
     </message>
     <message>
         <location filename="../qml/components/ListDelegate.qml" line="124"/>
-        <source>Add to favorites</source>
+        <source>Remove from Favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../qml/components/ListDelegate.qml" line="131"/>
-        <source>Remove from favorites</source>
+        <location filename="../qml/components/ListDelegate.qml" line="124"/>
+        <source>Add to Favorites</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
