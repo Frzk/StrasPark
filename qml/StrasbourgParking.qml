@@ -25,6 +25,7 @@ import "pages"
 
 ApplicationWindow
 {
+    allowedOrientations: Orientation.All
     initialPage: Component { ListPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }
