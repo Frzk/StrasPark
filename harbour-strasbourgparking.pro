@@ -12,7 +12,8 @@
 # The name of your application
 TARGET = harbour-strasbourgparking
 
-CONFIG += sailfishapp
+CONFIG += sailfishapp \
+    sailfishapp_i18n
 
 HEADERS += \
     src/ParkingListModel.h \
@@ -40,8 +41,6 @@ OTHER_FILES += qml/StrasbourgParking.qml \
     rpm/$${TARGET}.spec \
     rpm/$${TARGET}.yaml \
     $${TARGET}.desktop
-
-CONFIG += sailfishapp_i18n
 
 TRANSLATIONS += translations/$${TARGET}-en_EN.ts \
                 translations/$${TARGET}-fr_FR.ts
