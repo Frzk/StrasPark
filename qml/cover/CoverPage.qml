@@ -33,7 +33,7 @@ CoverBackground {
 
 
     CoverPlaceholder {
-        text: qsTr("No data.")
+        text: parkingModel.isRefreshing ? qsTr("Refreshing...") : qsTr("No data.")
         visible: list.count == 0
     }
 
@@ -91,6 +91,8 @@ CoverBackground {
 
     CoverActionList {
         id: coverAction
+
+        enabled: !parkingModel.isRefreshing
 
         CoverAction {
             iconSource: "image://theme/icon-cover-refresh"
