@@ -25,37 +25,45 @@
 #include <QSortFilterProxyModel>
 #include <QVariant>
 
+#include "DataSource.h"
 #include "ParkingListModel.h"
-#include "ParkingModel.h"
 
 class SortedParkingListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-    public:
-        // CONSTRUCTOR :
-        explicit SortedParkingListModel(QObject *parent = 0);
+    Q_PROPERTY(DataSource* dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
+    Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
+    Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
 
-        // DESTRUCTOR :
+    public:
+        explicit SortedParkingListModel();
         ~SortedParkingListModel();
 
-        // REIMPLEMENTED :
-        bool                lessThan(const QModelIndex &left, const QModelIndex &right) const;
+        bool                        lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
-        // METHODS :
-        ParkingListModel*   model() const;
-
-        // Q_INVOKABLE :
         Q_INVOKABLE QVariantMap     getParking(const int row) const;
+        Q_INVOKABLE void            triggerUpdate() const;
 
-    private:
-        ParkingListModel    *m_model;
+        DataSource*                 dataSource() const;
+        bool                        isRefreshing() const;
+        QDateTime                   lastUpdate() const;
+
+        void                        setDataSource(DataSource*);
 
     signals:
-        void                favoriteChanged(int row, bool isFav);
+        //void                        favoriteChanged(int row, bool isFav);
+        void                        dataSourceChanged();
+        void                        isRefreshingChanged();
+        void                        lastUpdateChanged();
 
-    public slots:
-        //void                markAsFavorite(const int row, const bool isFav);
+    private slots:
+        void                        emitDataSourceChanged();
+        void                        emitIsRefreshingChanged();
+        void                        emitLastUpdateChanged();
+
+    private:
+        ParkingListModel            *m_model;
 };
 
 #endif // SORTEDPARKINGLISTMODEL_H

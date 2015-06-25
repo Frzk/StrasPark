@@ -25,15 +25,21 @@
 #include <QObject>
 
 #include <QAbstractListModel>
+#include <QDateTime>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QNetworkAccessManager>
+#include <QVariant>
 
+#include "DataSource.h"
+#include "FavoritesStorage.h"
 #include "ParkingModel.h"
 
 class ParkingListModel : public QAbstractListModel
 {
     Q_OBJECT
-
-    // Q_PROPERTY(...)
 
     public:
         // CONSTRUCTOR
@@ -41,10 +47,6 @@ class ParkingListModel : public QAbstractListModel
 
         // DESTRUCTOR
         ~ParkingListModel();
-
-        // CONSTANTS
-        static const QString source1;
-        static const QString source2;
 
         // REIMPLEMENTED METHODS
         int                     rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -66,15 +68,43 @@ class ParkingListModel : public QAbstractListModel
         bool                    hasIndex(int row, int column, const QModelIndex &parent) const;
         ParkingModel*           itemAt(const QModelIndex &index) const;
 
+        // Q_PROPERTY METHODS
+        bool                    isRefreshing() const;
+        DataSource*             dataSource() const;
+        QDateTime               lastUpdate() const;
+
+        void                    setDataSource(DataSource *s);
+
+        // OTHER METHODS
+        bool                    canRefresh() const;
+        static QHash<int, QJsonObject>      jsonArrayToHashMap(const QJsonArray &a);
+
     signals:
-        void countChanged(int);
-        void isFavoriteChanged(int, bool);
-        void refreshNeeded();
-        void listUpToDate();
+        void                    countChanged(int);
+        void                    isFavoriteChanged(int, bool);
+        void                    dataSourceChanged();
+        void                    modelFilled();
+        void                    isRefreshingChanged();
+        void                    dataRefreshed();
+        void                    lastUpdateChanged();
+
+    public slots:
+        void                    triggerUpdate();
+
+    private slots:
+        void                    fillModel(const QJsonDocument &d);
+        void                    refresh(const QJsonDocument &d);
+        void                    updateData();
+        void                    handleNetworkError(const QNetworkReply::NetworkError &errcode);
 
     private:
+        static const int        refreshInterval = 180;  // Only allow refresh after 3 minutes.
         ParkingModel            *m_prototype;
         QList<ParkingModel*>    m_parkings;
+        DataSource              *m_dataSource;
+        FavoritesStorage        *m_fav;
+        bool                    m_isRefreshing;
+        QDateTime               m_lastSuccessfulRefresh;
 };
 
 #endif // PARKINGLISTMODEL_H

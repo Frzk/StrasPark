@@ -24,7 +24,8 @@
 #include <QtQuick>
 
 #include <sailfishapp.h>
-#include "Controller.h"
+#include "DataSource.h"
+#include "SortedParkingListModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -34,10 +35,8 @@ int main(int argc, char *argv[])
 
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
-    Controller *controller = new Controller();
-
-    view->rootContext()->setContextProperty("parkingListModel", controller->model());
-    view->rootContext()->setContextObject(controller);
+    qmlRegisterType<SortedParkingListModel>("org.kubler.StrasbourgParking", 1, 0, "ParkingModel");
+    qmlRegisterType<DataSource>("org.kubler.StrasbourgParking", 1, 0, "DataSource");
 
     view->setSource(SailfishApp::pathTo("qml/StrasbourgParking.qml"));
     view->showFullScreen();
