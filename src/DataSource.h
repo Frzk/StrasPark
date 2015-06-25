@@ -56,6 +56,7 @@ class DataSource : public QObject
         void    emitListReady(const QJsonDocument &d);
         void    emitDataReady(const QJsonDocument &d);
         void    emitNetworkError(const QNetworkReply::NetworkError &errcode);
+        void    handleJsonParsingError(const QString &err);
 };
 
 #endif // CONTROLLER_H

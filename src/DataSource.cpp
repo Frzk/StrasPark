@@ -21,8 +21,8 @@
 
 #include "DataSource.h"
 
-const QString DataSource::source1 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.geometry-ohohoh");
-const QString DataSource::source2 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.status-ohohoh");
+const QString DataSource::source1 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.geometry");
+const QString DataSource::source2 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.status");
 
 DataSource::DataSource(QObject *parent) : QObject(parent)
 {
@@ -31,10 +31,12 @@ DataSource::DataSource(QObject *parent) : QObject(parent)
 
     QObject::connect(this->m_req1, &JSONRequest::documentReady, this, &DataSource::emitListReady);
     QObject::connect(this->m_req1, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
+    QObject::connect(this->m_req1, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
     //TODO: connect jsonParsingError signal to some slot.
 
     QObject::connect(this->m_req2, &JSONRequest::documentReady, this, &DataSource::emitDataReady);
     QObject::connect(this->m_req2, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
+    QObject::connect(this->m_req2, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
     //TODO: connect jsonParsingError signal to some slot.
 }
 
@@ -70,4 +72,9 @@ void DataSource::emitDataReady(const QJsonDocument &d)
 void DataSource::emitNetworkError(const QNetworkReply::NetworkError &errcode)
 {
     emit networkError(errcode);
+}
+
+void DataSource::handleJsonParsingError(const QString &err)
+{
+    qDebug() << err;
 }
