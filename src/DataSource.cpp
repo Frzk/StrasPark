@@ -32,12 +32,10 @@ DataSource::DataSource(QObject *parent) : QObject(parent)
     QObject::connect(this->m_req1, &JSONRequest::documentReady, this, &DataSource::emitListReady);
     QObject::connect(this->m_req1, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
     QObject::connect(this->m_req1, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
-    //TODO: connect jsonParsingError signal to some slot.
 
     QObject::connect(this->m_req2, &JSONRequest::documentReady, this, &DataSource::emitDataReady);
     QObject::connect(this->m_req2, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
     QObject::connect(this->m_req2, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
-    //TODO: connect jsonParsingError signal to some slot.
 }
 
 DataSource::~DataSource()
