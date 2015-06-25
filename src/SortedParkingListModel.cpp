@@ -136,18 +136,3 @@ QVariantMap SortedParkingListModel::getParking(const int row) const
 
     return r;
 }
-
-
-/*
-bool Controller::updateFavorite(int id, bool value)
-{
-    bool r = false;
-
-    if(value)
-        r = this->m_fav->add(id);
-    else
-        r = this->m_fav->remove(id);
-
-    return r;
-}
-*/

@@ -32,10 +32,8 @@ ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
     //FIXME: is this the right place ?
     this->m_fav->load();
 
-    qDebug() << this->m_fav->get();
-
     QObject::connect(this, &ParkingListModel::modelFilled, this, &ParkingListModel::updateData);
-    QObject::connect(this, &ParkingListModel::isFavoriteChanged, this, &ParkingListModel::updateFavorites);
+    QObject::connect(this, &ParkingListModel::isFavoriteChanged, this, &ParkingListModel::updateFavorite);
 }
 
 ParkingListModel::~ParkingListModel()
@@ -423,15 +421,28 @@ void ParkingListModel::handleNetworkError(const QNetworkReply::NetworkError &err
     emit isRefreshingChanged();
 }
 
+// Called when favoriteChanged is emitted.
+bool ParkingListModel::updateFavorite(int id, bool value)
+{
+    bool r = false;
 
+    if(value)
+        r = this->m_fav->add(id);
+    else
+        r = this->m_fav->remove(id);
+
+    return r;
+}
+
+
+
+// OTHER METHODS
 
 bool ParkingListModel::canRefresh() const
 {
     QDateTime now = QDateTime::currentDateTimeUtc();
     return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > ParkingListModel::refreshInterval);
 }
-
-
 
 QHash<int, QJsonObject> ParkingListModel::jsonArrayToHashMap(const QJsonArray &a)
 {

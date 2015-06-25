@@ -96,6 +96,7 @@ class ParkingListModel : public QAbstractListModel
         void                    refresh(const QJsonDocument &d);
         void                    updateData();
         void                    handleNetworkError(const QNetworkReply::NetworkError &errcode);
+        bool                    updateFavorite(int, bool);
 
     private:
         static const int        refreshInterval = 180;  // Only allow refresh after 3 minutes.
