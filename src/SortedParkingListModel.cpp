@@ -21,10 +21,10 @@
 
 #include "SortedParkingListModel.h"
 
-SortedParkingListModel::SortedParkingListModel() :
-    QSortFilterProxyModel()
+SortedParkingListModel::SortedParkingListModel() : QSortFilterProxyModel()
 {
     this->m_model = new ParkingListModel(this);
+    this->m_filter = false;
 
     this->setSourceModel(this->m_model);
     this->sort(0, Qt::DescendingOrder);
@@ -66,6 +66,19 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
         r = (leftName > rightName);
     else
         r = (leftIsFavorite < rightIsFavorite);
+
+    return r;
+}
+
+bool SortedParkingListModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    bool r = true;
+
+    if(this->m_filter)
+    {
+        QModelIndex idx = this->sourceModel()->index(source_row, 0, source_parent);
+        r = this->sourceModel()->data(idx, Qt::UserRole + 9).toBool();
+    }
 
     return r;
 }
@@ -120,6 +133,12 @@ void SortedParkingListModel::emitLastUpdateChanged()
 void SortedParkingListModel::triggerUpdate() const
 {
     this->m_model->triggerUpdate();
+}
+
+void SortedParkingListModel::toggleFilter()
+{
+    this->m_filter = !this->m_filter;
+    this->invalidateFilter();
 }
 
 QVariantMap SortedParkingListModel::getParking(const int row) const
