@@ -48,6 +48,8 @@ ParkingListModel::~ParkingListModel()
     this->m_parkings.clear();
 }
 
+
+
 QHash<int, QByteArray> ParkingListModel::roleNames() const
 {
     return this->m_prototype->roleNames();
@@ -344,6 +346,10 @@ void ParkingListModel::fillModel(const QJsonDocument &d)
     QJsonObject obj = d.object();
     QJsonValue v = obj.value("s");
 
+    // Thanks to the dumb dev that doesn't know about HTTP,
+    // the webservice returns an HTTP code 200 with valid JSON rather than, for example, a 404.
+    // We have to handle this.
+
     if(v != QJsonValue::Undefined)
     {
         QJsonArray parks = v.toArray();
@@ -366,11 +372,19 @@ void ParkingListModel::fillModel(const QJsonDocument &d)
         }
 
         this->appendRows(l);
+        emit modelFilled();
     }
-    //else
-    //FIXME
+    else
+    {
+        //FIXME: would it a better practice to emit a signal here ?
+        //emit jsonError();
 
-    emit modelFilled();
+        // We still have to stop the refreshing indicator :
+        this->m_isRefreshing = false;
+        emit isRefreshingChanged();
+
+        qDebug() << "Webservice didn't return suitable data (fillModel).";
+    }
 }
 
 // Called when m_dataSource emits the dataReady signal.
@@ -406,8 +420,11 @@ void ParkingListModel::refresh(const QJsonDocument &d)
 
         emit dataRefreshed();
     }
-    //else
-    //FIXME
+    else
+    {
+        // FIXME: same as fillModel : should we emit a signal here ?
+        qDebug() << "Webservice didn't return suitable data (refresh).";
+    }
 
     this->m_isRefreshing = false;
     emit isRefreshingChanged();
