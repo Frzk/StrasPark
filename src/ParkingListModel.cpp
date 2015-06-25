@@ -288,7 +288,7 @@ void ParkingListModel::setDataSource(DataSource *src)
     {
         if(this->m_dataSource)
         {
-            // We first have to disconnect the old controller :
+            // We first have to disconnect the old dataSource :
             QObject::disconnect(this->m_dataSource, SIGNAL(listReady()), 0, 0);
             QObject::disconnect(this->m_dataSource, SIGNAL(dataReady()), 0, 0);
             QObject::disconnect(this->m_dataSource, SIGNAL(networkError()), 0 ,0);

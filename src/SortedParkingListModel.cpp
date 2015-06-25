@@ -140,18 +140,3 @@ void SortedParkingListModel::toggleFilter()
     this->m_filter = !this->m_filter;
     this->invalidateFilter();
 }
-
-QVariantMap SortedParkingListModel::getParking(const int row) const
-{
-    QVariantMap r;
-    QModelIndex idx = this->index(row, 0);
-    QHashIterator<int, QByteArray> i(this->roleNames());
-
-    while(i.hasNext())
-    {
-        i.next();
-        r.insert(i.value(), this->data(idx, i.key()));
-    }
-
-    return r;
-}
