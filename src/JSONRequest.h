@@ -24,6 +24,7 @@
 
 #include <QObject>
 
+#include <QDebug>
 #include <QJsonDocument>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>

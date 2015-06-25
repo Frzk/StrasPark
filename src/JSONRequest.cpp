@@ -25,8 +25,7 @@ JSONRequest::JSONRequest(QObject *parent) :
     QObject(parent)
 {
     this->m_qnam = new QNetworkAccessManager(parent);
-
-    QObject::connect(this->m_qnam, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleReply(QNetworkReply*)));
+    QObject::connect(this->m_qnam, &QNetworkAccessManager::finished, this, &JSONRequest::handleReply);
 }
 
 JSONRequest::~JSONRequest()
@@ -78,5 +77,6 @@ void JSONRequest::handleReply(QNetworkReply *reply)
         emit networkError(reply->error());
     }
 
-    delete reply;
+    reply->close();
+    reply->deleteLater();
 }
