@@ -21,15 +21,13 @@
 
 #include "DataSource.h"
 
-const QString DataSource::source1 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.geometry");
-const QString DataSource::source2 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.status");
+const QString DataSource::source1 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.geometry-ohohoh");
+const QString DataSource::source2 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.status-ohohoh");
 
 DataSource::DataSource(QObject *parent) : QObject(parent)
 {
     this->m_req1 = new JSONRequest(this);
     this->m_req2 = new JSONRequest(this);
-
-    //QObject::connect(this->m_model->model(), SIGNAL(isFavoriteChanged(int, bool)), this, SLOT(updateFavorite(int, bool)));
 
     QObject::connect(this->m_req1, &JSONRequest::documentReady, this, &DataSource::emitListReady);
     QObject::connect(this->m_req1, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
@@ -73,14 +71,3 @@ void DataSource::emitNetworkError(const QNetworkReply::NetworkError &errcode)
 {
     emit networkError(errcode);
 }
-
-// Q_INVOKABLE
-/*
-bool DataSource::isFavorite(const int row) const
-{
-    QModelIndex idx = this->m_model->index(row, 0);
-    bool r = this->m_model->data(idx, Qt::UserRole + 9).toBool();
-
-    return r;
-}
-*/

@@ -33,7 +33,6 @@ class DataSource : public QObject
     Q_OBJECT
 
     public:
-        // CONSTANTS
         static const QString source1;
         static const QString source2;
 
@@ -41,7 +40,6 @@ class DataSource : public QObject
 
         ~DataSource();
 
-        //Q_INVOKABLE bool                    isFavorite(const int row) const;
         void                        getList() const;
         void                        getData() const;
 
