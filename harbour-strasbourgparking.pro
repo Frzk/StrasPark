@@ -21,7 +21,7 @@ HEADERS += \
     src/JSONRequest.h \
     src/SortedParkingListModel.h \
     src/FavoritesStorage.h \
-    src/Controller.h
+    src/DataSource.h
 
 SOURCES += src/StrasbourgParking.cpp \
     src/ParkingListModel.cpp \
@@ -29,7 +29,7 @@ SOURCES += src/StrasbourgParking.cpp \
     src/JSONRequest.cpp \
     src/SortedParkingListModel.cpp \
     src/FavoritesStorage.cpp \
-    src/Controller.cpp
+    src/DataSource.cpp
 
 OTHER_FILES += qml/StrasbourgParking.qml \
     qml/cover/CoverPage.qml \

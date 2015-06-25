@@ -21,24 +21,28 @@
 
 #include "ParkingListModel.h"
 
-const QString ParkingListModel::source1 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.geometry");
-const QString ParkingListModel::source2 = QString("http://carto.strasmap.eu/remote.amf.json/Parking.status");
-
-
-ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
+ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent), m_dataSource(0)
 {
-    //FIXME:
     this->m_prototype = new ParkingModel();
     this->m_parkings = QList<ParkingModel *>();
+    this->m_fav = new FavoritesStorage(this);
+    this->m_isRefreshing = false;
+    // this->m_dataSource is set in QML.
 
-    //QObject::connect(this, SIGNAL(refreshNeeded()), this, SLOT(refresh()));
-    //QObject::connect(this, SIGNAL(listUpToDate()), this, SLOT(fillList()));
+    //FIXME: is this the right place ?
+    this->m_fav->load();
+
+    QObject::connect(this, &ParkingListModel::modelFilled, this, &ParkingListModel::updateData);
+    QObject::connect(this, &ParkingListModel::isFavoriteChanged, this, &ParkingListModel::updateFavorite);
 }
 
 ParkingListModel::~ParkingListModel()
 {
     delete this->m_prototype;
     this->m_prototype = NULL;
+
+    delete this->m_fav;
+    delete this->m_dataSource;
 
     this->clear();
     this->m_parkings.clear();
@@ -254,6 +258,201 @@ ParkingModel* ParkingListModel::itemAt(const QModelIndex &index) const
     if(index.isValid() && index.row() < this->rowCount())
     {
         r = this->m_parkings.at(index.row());
+    }
+
+    return r;
+}
+
+
+
+// Q_PROPERTY RELATED
+
+DataSource* ParkingListModel::dataSource() const
+{
+    return this->m_dataSource;
+}
+
+bool ParkingListModel::isRefreshing() const
+{
+    return this->m_isRefreshing;
+}
+
+QDateTime ParkingListModel::lastUpdate() const
+{
+    return this->m_lastSuccessfulRefresh;
+}
+
+void ParkingListModel::setDataSource(DataSource *src)
+{
+    if(this->m_dataSource != src)
+    {
+        if(this->m_dataSource)
+        {
+            // We first have to disconnect the old controller :
+            QObject::disconnect(this->m_dataSource, SIGNAL(listReady()), 0, 0);
+            QObject::disconnect(this->m_dataSource, SIGNAL(dataReady()), 0, 0);
+            QObject::disconnect(this->m_dataSource, SIGNAL(networkError()), 0 ,0);
+        }
+
+        this->m_dataSource = src;
+
+        if(this->m_dataSource)
+        {
+            // And now we can "plug" the new one :
+            QObject::connect(this->m_dataSource, &DataSource::listReady, this, &ParkingListModel::fillModel);
+            QObject::connect(this->m_dataSource, &DataSource::dataReady, this, &ParkingListModel::refresh);
+            QObject::connect(this->m_dataSource, &DataSource::networkError, this, &ParkingListModel::handleNetworkError);
+        }
+
+        emit dataSourceChanged();
+    }
+}
+
+
+
+// SLOTS
+
+void ParkingListModel::triggerUpdate()
+{
+    this->updateData();
+}
+
+// Called when modelFilled signal is emitted
+// Or manually via triggerUpdate()
+void ParkingListModel::updateData()
+{
+    if(this->rowCount() > 0)
+    {
+        if(this->canRefresh())
+        {
+            this->m_dataSource->getData();
+            this->m_isRefreshing = true;
+            emit isRefreshingChanged();
+        }
+    }
+    else
+    {
+        this->m_dataSource->getList();
+        this->m_isRefreshing = true;
+        emit isRefreshingChanged();
+    }
+}
+
+// Called when m_dataSource emits the listReady signal.
+void ParkingListModel::fillModel(const QJsonDocument &d)
+{
+    QJsonObject obj = d.object();
+    QJsonValue v = obj.value("s");
+
+    if(v != QJsonValue::Undefined)
+    {
+        QJsonArray parks = v.toArray();
+        QList<ParkingModel *> l;
+
+        foreach(const QJsonValue p, parks)
+        {
+            QJsonObject o = p.toObject();
+            //FIXME: sounds like a good candidate for a memory leak...
+            ParkingModel *parkingLot = new ParkingModel(
+                        o.value("id").toString().toInt(),
+                        o.value("ln").toString(),
+                        o.value("go").toObject().value("x").toString(),
+                        o.value("go").toObject().value("y").toString(),
+                        (o.value("price_fr").toString() == "Parking relais CTS"),
+                        (this->m_fav->contains(o.value("id").toString().toInt()))
+            );
+
+            l << parkingLot;
+        }
+
+        this->appendRows(l);
+    }
+    //else
+    //FIXME
+
+    emit modelFilled();
+}
+
+// Called when m_dataSource emits the dataReady signal.
+void ParkingListModel::refresh(const QJsonDocument &d)
+{
+    QJsonObject obj = d.object();
+    QJsonValue v = obj.value("s");
+
+    if(v != QJsonValue::Undefined)
+    {
+        // Update lastSuccessfulRefresh to the current date + time so we can prevent abusive refresh.
+        this->m_lastSuccessfulRefresh = QDateTime::currentDateTimeUtc();
+        emit lastUpdateChanged();
+
+        // Transform JSON to QHash for a quicker access.
+        QHash<int, QJsonObject> values = ParkingListModel::jsonArrayToHashMap(v.toArray());
+
+        // Actually update the data.
+        for(int i=0 ; i<this->rowCount() ; i++)
+        {
+            QModelIndex idx = this->index(i, 0);
+            int id = this->data(idx, Qt::UserRole + 1).toInt();
+
+            QJsonObject o = values.take(id);
+            QString newStatus = o.value("ds").toString();
+            int freePlaces = o.value("df").toString().toInt();
+            int totalPlaces = o.value("dt").toString().toInt();
+
+            this->setData(idx, QVariant(newStatus), Qt::UserRole + 3);    // StatusRole
+            this->setData(idx, QVariant(freePlaces), Qt::UserRole + 4);   // FreeRole
+            this->setData(idx, QVariant(totalPlaces), Qt::UserRole + 5);  // TotalRole
+        }
+
+        emit dataRefreshed();
+    }
+    //else
+    //FIXME
+
+    this->m_isRefreshing = false;
+    emit isRefreshingChanged();
+}
+
+// Called when m_dataSource emits the networkError signal.
+void ParkingListModel::handleNetworkError(const QNetworkReply::NetworkError &errcode)
+{
+    qDebug() << errcode;
+    this->m_isRefreshing = false;
+    emit isRefreshingChanged();
+}
+
+// Called when favoriteChanged is emitted.
+bool ParkingListModel::updateFavorite(int id, bool value)
+{
+    bool r = false;
+
+    if(value)
+        r = this->m_fav->add(id);
+    else
+        r = this->m_fav->remove(id);
+
+    return r;
+}
+
+
+
+// OTHER METHODS
+
+bool ParkingListModel::canRefresh() const
+{
+    QDateTime now = QDateTime::currentDateTimeUtc();
+    return (!this->m_lastSuccessfulRefresh.isValid() || this->m_lastSuccessfulRefresh.secsTo(now) > ParkingListModel::refreshInterval);
+}
+
+QHash<int, QJsonObject> ParkingListModel::jsonArrayToHashMap(const QJsonArray &a)
+{
+    QHash<int, QJsonObject> r;
+
+    for(int i=0 ; i<a.size() ; i++)
+    {
+        QJsonObject obj = a.at(i).toObject();
+        int id = obj.value("id").toString().toInt();
+        r.insert(id, obj);
     }
 
     return r;

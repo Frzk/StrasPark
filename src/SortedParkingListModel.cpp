@@ -21,14 +21,18 @@
 
 #include "SortedParkingListModel.h"
 
-SortedParkingListModel::SortedParkingListModel(QObject *parent) :
-    QSortFilterProxyModel(parent)
+SortedParkingListModel::SortedParkingListModel() :
+    QSortFilterProxyModel()
 {
     this->m_model = new ParkingListModel(this);
 
     this->setSourceModel(this->m_model);
     this->sort(0, Qt::DescendingOrder);
     this->setDynamicSortFilter(true);
+
+    QObject::connect(this->m_model, &ParkingListModel::dataSourceChanged, this, &SortedParkingListModel::emitDataSourceChanged);
+    QObject::connect(this->m_model, &ParkingListModel::isRefreshingChanged, this, &SortedParkingListModel::emitIsRefreshingChanged);
+    QObject::connect(this->m_model, &ParkingListModel::lastUpdateChanged, this, &SortedParkingListModel::emitLastUpdateChanged);
 }
 
 SortedParkingListModel::~SortedParkingListModel()
@@ -36,10 +40,9 @@ SortedParkingListModel::~SortedParkingListModel()
     delete this->m_model;
 }
 
-ParkingListModel* SortedParkingListModel::model() const
-{
-    return this->m_model;
-}
+
+
+// REIMPLEMENTED
 
 bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
@@ -65,6 +68,58 @@ bool SortedParkingListModel::lessThan(const QModelIndex &left, const QModelIndex
         r = (leftIsFavorite < rightIsFavorite);
 
     return r;
+}
+
+
+
+// Q_PROPERTY RELATED
+
+DataSource* SortedParkingListModel::dataSource() const
+{
+    return this->m_model->dataSource();
+}
+
+bool SortedParkingListModel::isRefreshing() const
+{
+    return this->m_model->isRefreshing();
+}
+
+QDateTime SortedParkingListModel::lastUpdate() const
+{
+    return this->m_model->lastUpdate();
+}
+
+void SortedParkingListModel::setDataSource(DataSource* src)
+{
+    this->m_model->setDataSource(src);
+}
+
+
+
+// SLOTS
+
+void SortedParkingListModel::emitDataSourceChanged()
+{
+    emit dataSourceChanged();
+}
+
+void SortedParkingListModel::emitIsRefreshingChanged()
+{
+    emit isRefreshingChanged();
+}
+
+void SortedParkingListModel::emitLastUpdateChanged()
+{
+    emit lastUpdateChanged();
+}
+
+
+
+// OTHER METHODS
+
+void SortedParkingListModel::triggerUpdate() const
+{
+    this->m_model->triggerUpdate();
 }
 
 QVariantMap SortedParkingListModel::getParking(const int row) const
