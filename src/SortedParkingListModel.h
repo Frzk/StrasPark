@@ -41,9 +41,11 @@ class SortedParkingListModel : public QSortFilterProxyModel
         ~SortedParkingListModel();
 
         bool                        lessThan(const QModelIndex &left, const QModelIndex &right) const;
+        bool                        filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
         Q_INVOKABLE QVariantMap     getParking(const int row) const;
         Q_INVOKABLE void            triggerUpdate() const;
+        Q_INVOKABLE void            toggleFilter();
 
         DataSource*                 dataSource() const;
         bool                        isRefreshing() const;
@@ -64,6 +66,7 @@ class SortedParkingListModel : public QSortFilterProxyModel
 
     private:
         ParkingListModel            *m_model;
+        bool                        m_filter;
 };
 
 #endif // SORTEDPARKINGLISTMODEL_H

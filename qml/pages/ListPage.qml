@@ -88,17 +88,4 @@ Page {
 
         VerticalScrollDecorator {}
     }
-
-    ParkingModel {
-        id: parkingModel
-        dataSource: dataSource
-
-        onDataSourceChanged: {
-            triggerUpdate()
-        }
-    }
-
-    DataSource {
-        id: dataSource
-    }
 }
