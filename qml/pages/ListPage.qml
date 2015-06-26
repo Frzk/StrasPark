@@ -61,7 +61,7 @@ Page {
             id: busyIndicator
 
             anchors.centerIn: parent
-            running: view.count==0 && parkingModel.isRefreshing
+            running: view.count === 0 && parkingModel.isRefreshing
             size: BusyIndicatorSize.Large
         }
 
@@ -76,7 +76,10 @@ Page {
             }
 
             MenuLabel {
-                text: parkingModel.isRefreshing ? qsTr("Updating...") : (parkingModel.lastUpdate ? qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) : qsTr("No data."))
+                text: parkingModel.isRefreshing ? qsTr("Updating...") :
+                                                  (Date.parse(parkingModel.lastUpdate) ?
+                                                       qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
+                                                       qsTr("No data."))
             }
         }
 
