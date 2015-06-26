@@ -25,12 +25,11 @@ import Sailfish.Silica 1.0
 import org.kubler.StrasbourgParking 1.0
 
 import "../components"
-
+import "../pragma/Helpers.js" as Helpers
 
 
 Page {
     id: page
-
 
     property alias view: view
 
@@ -72,7 +71,9 @@ Page {
             MenuItem {
                 enabled: !parkingModel.isRefreshing
                 text: qsTr("Refresh")
-                onClicked: parkingModel.triggerUpdate()
+                onClicked: {
+                    parkingModel.triggerUpdate()
+                }
             }
 
             MenuLabel {
@@ -84,9 +85,9 @@ Page {
         }
 
         ViewPlaceholder {
-            enabled: view.count == 0 && !parkingModel.isRefreshing
-            hintText: qsTr("Pull to refresh.")
-            text: qsTr("No data !")
+            enabled: (view.count == 0 && !parkingModel.isRefreshing) || parkingModel.error !== ParkingModel.None
+            hintText: Helpers.getErrorHintText(parkingModel.error) //qsTr("Pull to refresh.")
+            text: parkingModel.error !== ParkingModel.None ? qsTr("An error occured :(") : qsTr("No data !")
         }
 
         VerticalScrollDecorator {}
