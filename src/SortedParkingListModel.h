@@ -32,35 +32,49 @@ class SortedParkingListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
+    Q_ENUMS(Error)
+
     Q_PROPERTY(DataSource* dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
     Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
+    Q_PROPERTY(Error error READ error NOTIFY errorChanged)
 
     public:
+        // Copy from ParkingListModel::Error enum
+        // so that we can expose it to QML (see Q_ENUMS above).
+        enum Error {
+            None = ParkingListModel::None,
+            Networking = ParkingListModel::Networking,
+            Json = ParkingListModel::Json
+        };
+
         explicit SortedParkingListModel();
         ~SortedParkingListModel();
 
-        bool                        lessThan(const QModelIndex &left, const QModelIndex &right) const;
-        bool                        filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+        bool                            lessThan(const QModelIndex &left, const QModelIndex &right) const;
+        bool                            filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
-        Q_INVOKABLE void            triggerUpdate() const;
-        Q_INVOKABLE void            toggleFilter();
+        Q_INVOKABLE void                triggerUpdate() const;
+        Q_INVOKABLE void                toggleFilter();
 
-        DataSource*                 dataSource() const;
-        bool                        isRefreshing() const;
-        QDateTime                   lastUpdate() const;
+        DataSource*                     dataSource() const;
+        bool                            isRefreshing() const;
+        QDateTime                       lastUpdate() const;
+        SortedParkingListModel::Error   error() const;
 
-        void                        setDataSource(DataSource*);
+        void                            setDataSource(DataSource*);
 
     signals:
         void                        dataSourceChanged();
         void                        isRefreshingChanged();
         void                        lastUpdateChanged();
+        void                        errorChanged();
 
     private slots:
         void                        emitDataSourceChanged();
         void                        emitIsRefreshingChanged();
         void                        emitLastUpdateChanged();
+        void                        emitErrorChanged();
 
     private:
         ParkingListModel            *m_model;

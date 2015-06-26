@@ -33,6 +33,7 @@ SortedParkingListModel::SortedParkingListModel() : QSortFilterProxyModel()
     QObject::connect(this->m_model, &ParkingListModel::dataSourceChanged, this, &SortedParkingListModel::emitDataSourceChanged);
     QObject::connect(this->m_model, &ParkingListModel::isRefreshingChanged, this, &SortedParkingListModel::emitIsRefreshingChanged);
     QObject::connect(this->m_model, &ParkingListModel::lastUpdateChanged, this, &SortedParkingListModel::emitLastUpdateChanged);
+    QObject::connect(this->m_model, &ParkingListModel::errorChanged, this, &SortedParkingListModel::emitErrorChanged);
 }
 
 SortedParkingListModel::~SortedParkingListModel()
@@ -102,6 +103,13 @@ QDateTime SortedParkingListModel::lastUpdate() const
     return this->m_model->lastUpdate();
 }
 
+SortedParkingListModel::Error SortedParkingListModel::error() const
+{
+    // We have to static_cast ParkingListModel::Error to SortedParkingListModel::Error :
+    return static_cast<SortedParkingListModel::Error>(this->m_model->error());
+}
+
+
 void SortedParkingListModel::setDataSource(DataSource* src)
 {
     this->m_model->setDataSource(src);
@@ -124,6 +132,11 @@ void SortedParkingListModel::emitIsRefreshingChanged()
 void SortedParkingListModel::emitLastUpdateChanged()
 {
     emit lastUpdateChanged();
+}
+
+void SortedParkingListModel::emitErrorChanged()
+{
+    emit errorChanged();
 }
 
 
