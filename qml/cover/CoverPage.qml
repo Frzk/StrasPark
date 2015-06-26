@@ -26,10 +26,8 @@ import "../components"
 import "../pragma/Helpers.js" as Helpers
 
 
-
 CoverBackground {
     id: cover
-
 
 
     CoverPlaceholder {
