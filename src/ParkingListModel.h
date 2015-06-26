@@ -42,6 +42,12 @@ class ParkingListModel : public QAbstractListModel
     Q_OBJECT
 
     public:
+        enum Error {
+            None,
+            Networking,
+            Json
+        };
+
         // CONSTRUCTOR
         explicit ParkingListModel(QObject *parent = 0);
 
@@ -72,6 +78,7 @@ class ParkingListModel : public QAbstractListModel
         bool                    isRefreshing() const;
         DataSource*             dataSource() const;
         QDateTime               lastUpdate() const;
+        ParkingListModel::Error error() const;
 
         void                    setDataSource(DataSource *s);
 
@@ -87,7 +94,8 @@ class ParkingListModel : public QAbstractListModel
         void                    isRefreshingChanged();
         void                    dataRefreshed();
         void                    lastUpdateChanged();
-        void                    jsonError();
+        void                    jsonError(const QString &err);
+        void                    errorChanged();
 
     public slots:
         void                    triggerUpdate();
@@ -98,15 +106,17 @@ class ParkingListModel : public QAbstractListModel
         void                    updateData();
         bool                    updateFavorite(int, bool);
         void                    handleNetworkError(const QNetworkReply::NetworkError &errcode);
+        void                    handleJsonError(const QString &err);
 
     private:
-        static const int        refreshInterval = 180;  // Only allow refresh after 3 minutes.
+        static const int        refreshInterval = 5;  // Only allow refresh after 3 minutes.
         ParkingModel            *m_prototype;
         QList<ParkingModel*>    m_parkings;
         DataSource              *m_dataSource;
         FavoritesStorage        *m_fav;
         bool                    m_isRefreshing;
         QDateTime               m_lastSuccessfulRefresh;
+        Error                   m_error;
 };
 
 #endif // PARKINGLISTMODEL_H
