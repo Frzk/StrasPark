@@ -32,20 +32,20 @@ class SortedParkingListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-    Q_ENUMS(Error)
+    Q_ENUMS(Status)
 
     Q_PROPERTY(DataSource* dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
-    Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
-    Q_PROPERTY(Error error READ error NOTIFY errorChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
     public:
         // Copy from ParkingListModel::Error enum
         // so that we can expose it to QML (see Q_ENUMS above).
-        enum Error {
-            None = ParkingListModel::None,
-            Networking = ParkingListModel::Networking,
-            Json = ParkingListModel::Json
+        enum Status {
+            Refreshing = ParkingListModel::Refreshing,
+            NoError = ParkingListModel::NoError,
+            NetworkError = ParkingListModel::NetworkError,
+            JsonError = ParkingListModel::JsonError
         };
 
         explicit SortedParkingListModel();
@@ -58,23 +58,20 @@ class SortedParkingListModel : public QSortFilterProxyModel
         Q_INVOKABLE void                toggleFilter();
 
         DataSource*                     dataSource() const;
-        bool                            isRefreshing() const;
+        SortedParkingListModel::Status  status() const;
         QDateTime                       lastUpdate() const;
-        SortedParkingListModel::Error   error() const;
 
         void                            setDataSource(DataSource*);
 
     signals:
         void                        dataSourceChanged();
-        void                        isRefreshingChanged();
+        void                        statusChanged();
         void                        lastUpdateChanged();
-        void                        errorChanged();
 
     private slots:
         void                        emitDataSourceChanged();
-        void                        emitIsRefreshingChanged();
+        void                        emitStatusChanged();
         void                        emitLastUpdateChanged();
-        void                        emitErrorChanged();
 
     private:
         ParkingListModel            *m_model;

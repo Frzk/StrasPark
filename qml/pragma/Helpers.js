@@ -121,13 +121,13 @@ function getErrorHintText(err)
 
     switch(err)
     {
-        case 0: // ParkingModel.None
+        case 1: // ParkingModel.NoError
             r = qsTr("Pull to refresh.");
             break;
-        case 1: // ParkingModel.Networking
+        case 2: // ParkingModel.NetworkError
             r = qsTr("The source of data can't be reached.");
             break;
-        case 2: // ParkingModel.Json
+        case 3: // ParkingModel.JsonError
             r = qsTr("The data returned by the webservice can't be used.");
             break;
         default:

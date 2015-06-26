@@ -60,16 +60,16 @@ Page {
             id: busyIndicator
 
             anchors.centerIn: parent
-            running: view.count === 0 && parkingModel.isRefreshing
+            running: view.count === 0 && parkingModel.status === ParkingModel.Refreshing
             size: BusyIndicatorSize.Large
         }
 
         PullDownMenu {
-            busy: parkingModel.isRefreshing
+            busy: parkingModel.status === ParkingModel.Refreshing
             quickSelect: true
 
             MenuItem {
-                enabled: !parkingModel.isRefreshing
+                enabled: parkingModel.status !== ParkingModel.Refreshing
                 text: qsTr("Refresh")
                 onClicked: {
                     parkingModel.triggerUpdate()
@@ -77,17 +77,17 @@ Page {
             }
 
             MenuLabel {
-                text: parkingModel.isRefreshing ? qsTr("Updating...") :
-                                                  (Date.parse(parkingModel.lastUpdate) ?
-                                                       qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
-                                                       qsTr("No data."))
+                text: parkingModel.status === ParkingModel.Refreshing ? qsTr("Updating...") :
+                                                                            (Date.parse(parkingModel.lastUpdate) ?
+                                                                                qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
+                                                                                qsTr("No data."))
             }
         }
 
         ViewPlaceholder {
-            enabled: (view.count == 0 && !parkingModel.isRefreshing) || parkingModel.error !== ParkingModel.None
-            hintText: Helpers.getErrorHintText(parkingModel.error) //qsTr("Pull to refresh.")
-            text: parkingModel.error !== ParkingModel.None ? qsTr("An error occured :(") : qsTr("No data !")
+            enabled: parkingModel.status !== ParkingModel.Refreshing && parkingModel.status !== ParkingModel.NoError
+            hintText: Helpers.getErrorHintText(parkingModel.status)
+            text: parkingModel.status !== ParkingModel.NoError ? qsTr("An error occured :(") : qsTr("No data !")
         }
 
         VerticalScrollDecorator {}
