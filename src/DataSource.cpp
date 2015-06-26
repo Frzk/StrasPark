@@ -31,11 +31,11 @@ DataSource::DataSource(QObject *parent) : QObject(parent)
 
     QObject::connect(this->m_req1, &JSONRequest::documentReady, this, &DataSource::emitListReady);
     QObject::connect(this->m_req1, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
-    QObject::connect(this->m_req1, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
+    QObject::connect(this->m_req1, &JSONRequest::jsonParsingError, this, &DataSource::emitJsonParsingError);
 
     QObject::connect(this->m_req2, &JSONRequest::documentReady, this, &DataSource::emitDataReady);
     QObject::connect(this->m_req2, &JSONRequest::networkError, this, &DataSource::emitNetworkError);
-    QObject::connect(this->m_req2, &JSONRequest::jsonParsingError, this, &DataSource::handleJsonParsingError);
+    QObject::connect(this->m_req2, &JSONRequest::jsonParsingError, this, &DataSource::emitJsonParsingError);
 }
 
 DataSource::~DataSource()
@@ -69,10 +69,12 @@ void DataSource::emitDataReady(const QJsonDocument &d)
 
 void DataSource::emitNetworkError(const QNetworkReply::NetworkError &errcode)
 {
+    //FIXME: is there a way to get a message from the errcode ?
+    // QNetworkReply::errorString() ?
     emit networkError(errcode);
 }
 
-void DataSource::handleJsonParsingError(const QString &err)
+void DataSource::emitJsonParsingError(const QString &err)
 {
-    qDebug() << err;
+    emit jsonParsingError(err);
 }

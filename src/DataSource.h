@@ -51,12 +51,13 @@ class DataSource : public QObject
         void    listReady(const QJsonDocument &d);
         void    dataReady(const QJsonDocument &d);
         void    networkError(const QNetworkReply::NetworkError &errcode);
+        void    jsonParsingError(const QString &err);
 
     private slots:
         void    emitListReady(const QJsonDocument &d);
         void    emitDataReady(const QJsonDocument &d);
         void    emitNetworkError(const QNetworkReply::NetworkError &errcode);
-        void    handleJsonParsingError(const QString &err);
+        void    emitJsonParsingError(const QString &err);
 };
 
 #endif // CONTROLLER_H
