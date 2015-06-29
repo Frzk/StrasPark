@@ -67,11 +67,9 @@ void DataSource::emitDataReady(const QJsonDocument &d)
     emit dataReady(d);
 }
 
-void DataSource::emitNetworkError(const QNetworkReply::NetworkError &errcode)
+void DataSource::emitNetworkError(const QString &err)
 {
-    //FIXME: is there a way to get a message from the errcode ?
-    // QNetworkReply::errorString() ?
-    emit networkError(errcode);
+    emit networkError(err);
 }
 
 void DataSource::emitJsonParsingError(const QString &err)

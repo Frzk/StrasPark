@@ -74,7 +74,7 @@ void JSONRequest::handleReply(QNetworkReply *reply)
     }
     else
     {
-        emit networkError(reply->error());
+        emit networkError(reply->errorString());
     }
 
     reply->close();

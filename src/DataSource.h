@@ -50,13 +50,13 @@ class DataSource : public QObject
     signals:
         void    listReady(const QJsonDocument &d);
         void    dataReady(const QJsonDocument &d);
-        void    networkError(const QNetworkReply::NetworkError &errcode);
+        void    networkError(const QString &err);
         void    jsonParsingError(const QString &err);
 
     private slots:
         void    emitListReady(const QJsonDocument &d);
         void    emitDataReady(const QJsonDocument &d);
-        void    emitNetworkError(const QNetworkReply::NetworkError &errcode);
+        void    emitNetworkError(const QString &err);
         void    emitJsonParsingError(const QString &err);
 };
 

@@ -426,9 +426,9 @@ void ParkingListModel::refresh(const QJsonDocument &d)
 }
 
 // Called when m_dataSource emits the networkError signal.
-void ParkingListModel::handleNetworkError(const QNetworkReply::NetworkError &errcode)
+void ParkingListModel::handleNetworkError(const QString &err)
 {
-    qDebug() << errcode;
+    qDebug() << err;
 
     // We have to clear the list so that the error message can be displayed.
     //    e.g. : When the model is filled but can't be refreshed.

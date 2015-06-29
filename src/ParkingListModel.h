@@ -105,7 +105,7 @@ class ParkingListModel : public QAbstractListModel
         void                    refresh(const QJsonDocument &d);
         void                    updateData();
         bool                    updateFavorite(int, bool);
-        void                    handleNetworkError(const QNetworkReply::NetworkError &errcode);
+        void                    handleNetworkError(const QString &err);
         void                    handleJsonError(const QString &err);
 
     private:
