@@ -25,12 +25,11 @@ import Sailfish.Silica 1.0
 import org.kubler.StrasbourgParking 1.0
 
 import "../components"
-
+import "../pragma/Helpers.js" as Helpers
 
 
 Page {
     id: page
-
 
     property alias view: view
 
@@ -61,29 +60,36 @@ Page {
             id: busyIndicator
 
             anchors.centerIn: parent
-            running: view.count==0 && parkingModel.isRefreshing
+            running: view.count === 0 && parkingModel.status === ParkingModel.Refreshing
             size: BusyIndicatorSize.Large
         }
 
         PullDownMenu {
-            busy: parkingModel.isRefreshing
+            busy: parkingModel.status === ParkingModel.Refreshing
             quickSelect: true
 
             MenuItem {
-                enabled: !parkingModel.isRefreshing
+                enabled: parkingModel.status !== ParkingModel.Refreshing
                 text: qsTr("Refresh")
-                onClicked: parkingModel.triggerUpdate()
+                onClicked: {
+                    parkingModel.triggerUpdate()
+                }
             }
 
             MenuLabel {
-                text: parkingModel.isRefreshing ? qsTr("Updating...") : (parkingModel.lastUpdate ? qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) : qsTr("No data."))
+                text: parkingModel.status === ParkingModel.Refreshing ? qsTr("Updating...") :
+                          parkingModel.status === ParkingModel.NoError && Date.parse(parkingModel.lastUpdate) ?
+                              qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
+                              qsTr("No data.")
             }
         }
 
         ViewPlaceholder {
-            enabled: view.count == 0 && !parkingModel.isRefreshing
-            hintText: qsTr("Pull to refresh.")
-            text: qsTr("No data !")
+            enabled: (parkingModel.status === ParkingModel.NetworkError) ||
+                     (parkingModel.status === ParkingModel.JsonError) ||
+                     (parkingModel.status === ParkingModel.NoError && view.count === 0)
+            hintText: Helpers.getErrorHintText(parkingModel.status)
+            text: parkingModel.status !== ParkingModel.NoError ? qsTr("An error occured :(") : qsTr("No data !")
         }
 
         VerticalScrollDecorator {}

@@ -26,7 +26,7 @@ ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
     this->m_prototype = new ParkingModel();
     this->m_parkings = QList<ParkingModel *>();
     this->m_fav = new FavoritesStorage(this);
-    this->m_isRefreshing = false;
+    this->m_status = NoError;
     // this->m_dataSource is set in QML.
 
     //FIXME: is this the right place ?
@@ -34,6 +34,7 @@ ParkingListModel::ParkingListModel(QObject *parent) : QAbstractListModel(parent)
 
     QObject::connect(this, &ParkingListModel::modelFilled, this, &ParkingListModel::updateData);
     QObject::connect(this, &ParkingListModel::isFavoriteChanged, this, &ParkingListModel::updateFavorite);
+    QObject::connect(this, &ParkingListModel::jsonError, this, &ParkingListModel::handleJsonError);
 }
 
 ParkingListModel::~ParkingListModel()
@@ -47,6 +48,8 @@ ParkingListModel::~ParkingListModel()
     this->clear();
     this->m_parkings.clear();
 }
+
+
 
 QHash<int, QByteArray> ParkingListModel::roleNames() const
 {
@@ -179,8 +182,9 @@ bool ParkingListModel::removeRow(int row, const QModelIndex &parent)
     {
         this->beginRemoveRows(parent, row, row);
 
-        delete this->m_parkings.at(row);
-        this->m_parkings.removeAt(row);
+        ParkingModel* p = this->m_parkings.takeAt(row);
+        delete p;
+        p = NULL;
 
         this->endRemoveRows();
 
@@ -200,10 +204,11 @@ bool ParkingListModel::removeRows(int row, int count, const QModelIndex &parent)
     {
         this->beginRemoveRows(parent, row, row + count - 1);
 
-        for(int i=(row + count - 1) ; i <= row ; i--)
+        for(int i=0 ; i<count ; i++)
         {
-            delete this->m_parkings.at(i);
-            this->m_parkings.removeAt(i);
+            ParkingModel* p = this->m_parkings.takeAt(row);
+            delete p;
+            p = NULL;
         }
 
         this->endRemoveRows();
@@ -272,14 +277,14 @@ DataSource* ParkingListModel::dataSource() const
     return this->m_dataSource;
 }
 
-bool ParkingListModel::isRefreshing() const
-{
-    return this->m_isRefreshing;
-}
-
 QDateTime ParkingListModel::lastUpdate() const
 {
     return this->m_lastSuccessfulRefresh;
+}
+
+ParkingListModel::Status ParkingListModel::status() const
+{
+    return this->m_status;
 }
 
 void ParkingListModel::setDataSource(DataSource *src)
@@ -292,6 +297,7 @@ void ParkingListModel::setDataSource(DataSource *src)
             QObject::disconnect(this->m_dataSource, SIGNAL(listReady()), 0, 0);
             QObject::disconnect(this->m_dataSource, SIGNAL(dataReady()), 0, 0);
             QObject::disconnect(this->m_dataSource, SIGNAL(networkError()), 0 ,0);
+            QObject::disconnect(this->m_dataSource, SIGNAL(jsonParsingError()), 0, 0);
         }
 
         this->m_dataSource = src;
@@ -302,6 +308,7 @@ void ParkingListModel::setDataSource(DataSource *src)
             QObject::connect(this->m_dataSource, &DataSource::listReady, this, &ParkingListModel::fillModel);
             QObject::connect(this->m_dataSource, &DataSource::dataReady, this, &ParkingListModel::refresh);
             QObject::connect(this->m_dataSource, &DataSource::networkError, this, &ParkingListModel::handleNetworkError);
+            QObject::connect(this->m_dataSource, &DataSource::jsonParsingError, this, &ParkingListModel::handleJsonError);
         }
 
         emit dataSourceChanged();
@@ -326,15 +333,15 @@ void ParkingListModel::updateData()
         if(this->canRefresh())
         {
             this->m_dataSource->getData();
-            this->m_isRefreshing = true;
-            emit isRefreshingChanged();
+            this->m_status = Refreshing;
+            emit statusChanged();
         }
     }
     else
     {
         this->m_dataSource->getList();
-        this->m_isRefreshing = true;
-        emit isRefreshingChanged();
+        this->m_status = Refreshing;
+        emit statusChanged();
     }
 }
 
@@ -343,6 +350,10 @@ void ParkingListModel::fillModel(const QJsonDocument &d)
 {
     QJsonObject obj = d.object();
     QJsonValue v = obj.value("s");
+
+    // Thanks to the dumb dev that doesn't know about HTTP,
+    // the webservice returns an HTTP code 200 with valid JSON rather than, for example, a 404.
+    // We have to handle this.
 
     if(v != QJsonValue::Undefined)
     {
@@ -353,7 +364,7 @@ void ParkingListModel::fillModel(const QJsonDocument &d)
         {
             QJsonObject o = p.toObject();
             //FIXME: sounds like a good candidate for a memory leak...
-            ParkingModel *parkingLot = new ParkingModel(
+            l << new ParkingModel(
                         o.value("id").toString().toInt(),
                         o.value("ln").toString(),
                         o.value("go").toObject().value("x").toString(),
@@ -361,16 +372,15 @@ void ParkingListModel::fillModel(const QJsonDocument &d)
                         (o.value("price_fr").toString() == "Parking relais CTS"),
                         (this->m_fav->contains(o.value("id").toString().toInt()))
             );
-
-            l << parkingLot;
         }
 
         this->appendRows(l);
+        emit modelFilled();
     }
-    //else
-    //FIXME
-
-    emit modelFilled();
+    else
+    {
+        emit jsonError(QString("Webservice fault."));
+    }
 }
 
 // Called when m_dataSource emits the dataReady signal.
@@ -405,20 +415,42 @@ void ParkingListModel::refresh(const QJsonDocument &d)
         }
 
         emit dataRefreshed();
-    }
-    //else
-    //FIXME
 
-    this->m_isRefreshing = false;
-    emit isRefreshingChanged();
+        this->m_status = NoError;
+        emit statusChanged();
+    }
+    else
+    {
+        emit jsonError(QString("Webservice fault."));
+    }
 }
 
 // Called when m_dataSource emits the networkError signal.
-void ParkingListModel::handleNetworkError(const QNetworkReply::NetworkError &errcode)
+void ParkingListModel::handleNetworkError(const QString &err)
 {
-    qDebug() << errcode;
-    this->m_isRefreshing = false;
-    emit isRefreshingChanged();
+    qDebug() << err;
+
+    // We have to clear the list so that the error message can be displayed.
+    //    e.g. : When the model is filled but can't be refreshed.
+    this->clear();
+
+    // We have an answer, stop loading.
+    this->m_status = NetworkError;
+    emit statusChanged();
+}
+
+// Called when m_dataSource emits the jsonParsingError signal.
+// Also called when the jsonError signal is emitted.
+void ParkingListModel::handleJsonError(const QString &err)
+{
+    // See handleNetworkError() comments for further help regarding the logic part of this method.
+
+    qDebug() << err;
+
+    this->clear();
+
+    this->m_status = JsonError;
+    emit statusChanged();
 }
 
 // Called when favoriteChanged is emitted.

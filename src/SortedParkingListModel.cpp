@@ -31,7 +31,7 @@ SortedParkingListModel::SortedParkingListModel() : QSortFilterProxyModel()
     this->setDynamicSortFilter(true);
 
     QObject::connect(this->m_model, &ParkingListModel::dataSourceChanged, this, &SortedParkingListModel::emitDataSourceChanged);
-    QObject::connect(this->m_model, &ParkingListModel::isRefreshingChanged, this, &SortedParkingListModel::emitIsRefreshingChanged);
+    QObject::connect(this->m_model, &ParkingListModel::statusChanged, this, &SortedParkingListModel::emitStatusChanged);
     QObject::connect(this->m_model, &ParkingListModel::lastUpdateChanged, this, &SortedParkingListModel::emitLastUpdateChanged);
 }
 
@@ -92,15 +92,19 @@ DataSource* SortedParkingListModel::dataSource() const
     return this->m_model->dataSource();
 }
 
-bool SortedParkingListModel::isRefreshing() const
+SortedParkingListModel::Status SortedParkingListModel::status() const
 {
-    return this->m_model->isRefreshing();
+    // We have to static_cast ParkingListModel::Status to SortedParkingListModel::Status :
+    return static_cast<SortedParkingListModel::Status>(this->m_model->status());
 }
 
 QDateTime SortedParkingListModel::lastUpdate() const
 {
     return this->m_model->lastUpdate();
 }
+
+
+
 
 void SortedParkingListModel::setDataSource(DataSource* src)
 {
@@ -116,9 +120,9 @@ void SortedParkingListModel::emitDataSourceChanged()
     emit dataSourceChanged();
 }
 
-void SortedParkingListModel::emitIsRefreshingChanged()
+void SortedParkingListModel::emitStatusChanged()
 {
-    emit isRefreshingChanged();
+    emit statusChanged();
 }
 
 void SortedParkingListModel::emitLastUpdateChanged()

@@ -28,7 +28,6 @@ import "../pragma/Helpers.js" as Helpers
 ListItem {
     id: listDelegate
 
-
     function setFav()
     {
         var s = qsTr("Adding to Favorites");

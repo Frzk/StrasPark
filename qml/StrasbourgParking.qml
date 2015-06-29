@@ -26,11 +26,13 @@ import org.kubler.StrasbourgParking 1.0
 
 import "pages"
 
+
 ApplicationWindow
 {
     allowedOrientations: Orientation.All
     initialPage: Component { ListPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
+
 
     ParkingModel {
         id: parkingModel

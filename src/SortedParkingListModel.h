@@ -32,34 +32,45 @@ class SortedParkingListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
+    Q_ENUMS(Status)
+
     Q_PROPERTY(DataSource* dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
-    Q_PROPERTY(bool isRefreshing READ isRefreshing NOTIFY isRefreshingChanged)
     Q_PROPERTY(QDateTime lastUpdate READ lastUpdate NOTIFY lastUpdateChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
     public:
+        // Copy from ParkingListModel::Error enum
+        // so that we can expose it to QML (see Q_ENUMS above).
+        enum Status {
+            Refreshing = ParkingListModel::Refreshing,
+            NoError = ParkingListModel::NoError,
+            NetworkError = ParkingListModel::NetworkError,
+            JsonError = ParkingListModel::JsonError
+        };
+
         explicit SortedParkingListModel();
         ~SortedParkingListModel();
 
-        bool                        lessThan(const QModelIndex &left, const QModelIndex &right) const;
-        bool                        filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+        bool                            lessThan(const QModelIndex &left, const QModelIndex &right) const;
+        bool                            filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
 
-        Q_INVOKABLE void            triggerUpdate() const;
-        Q_INVOKABLE void            toggleFilter();
+        Q_INVOKABLE void                triggerUpdate() const;
+        Q_INVOKABLE void                toggleFilter();
 
-        DataSource*                 dataSource() const;
-        bool                        isRefreshing() const;
-        QDateTime                   lastUpdate() const;
+        DataSource*                     dataSource() const;
+        SortedParkingListModel::Status  status() const;
+        QDateTime                       lastUpdate() const;
 
-        void                        setDataSource(DataSource*);
+        void                            setDataSource(DataSource*);
 
     signals:
         void                        dataSourceChanged();
-        void                        isRefreshingChanged();
+        void                        statusChanged();
         void                        lastUpdateChanged();
 
     private slots:
         void                        emitDataSourceChanged();
-        void                        emitIsRefreshingChanged();
+        void                        emitStatusChanged();
         void                        emitLastUpdateChanged();
 
     private:

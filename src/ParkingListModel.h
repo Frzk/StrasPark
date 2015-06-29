@@ -42,6 +42,13 @@ class ParkingListModel : public QAbstractListModel
     Q_OBJECT
 
     public:
+        enum Status {
+            Refreshing,
+            NoError,
+            NetworkError,
+            JsonError
+        };
+
         // CONSTRUCTOR
         explicit ParkingListModel(QObject *parent = 0);
 
@@ -69,9 +76,9 @@ class ParkingListModel : public QAbstractListModel
         ParkingModel*           itemAt(const QModelIndex &index) const;
 
         // Q_PROPERTY METHODS
-        bool                    isRefreshing() const;
-        DataSource*             dataSource() const;
-        QDateTime               lastUpdate() const;
+        DataSource*                 dataSource() const;
+        QDateTime                   lastUpdate() const;
+        ParkingListModel::Status    status() const;
 
         void                    setDataSource(DataSource *s);
 
@@ -84,9 +91,11 @@ class ParkingListModel : public QAbstractListModel
         void                    isFavoriteChanged(int, bool);
         void                    dataSourceChanged();
         void                    modelFilled();
-        void                    isRefreshingChanged();
+        void                    statusChanged();
         void                    dataRefreshed();
         void                    lastUpdateChanged();
+        void                    jsonError(const QString &err);
+        void                    errorChanged();
 
     public slots:
         void                    triggerUpdate();
@@ -95,17 +104,18 @@ class ParkingListModel : public QAbstractListModel
         void                    fillModel(const QJsonDocument &d);
         void                    refresh(const QJsonDocument &d);
         void                    updateData();
-        void                    handleNetworkError(const QNetworkReply::NetworkError &errcode);
         bool                    updateFavorite(int, bool);
+        void                    handleNetworkError(const QString &err);
+        void                    handleJsonError(const QString &err);
 
     private:
-        static const int        refreshInterval = 180;  // Only allow refresh after 3 minutes.
-        ParkingModel            *m_prototype;
-        QList<ParkingModel*>    m_parkings;
-        DataSource              *m_dataSource;
-        FavoritesStorage        *m_fav;
-        bool                    m_isRefreshing;
-        QDateTime               m_lastSuccessfulRefresh;
+        static const int            refreshInterval = 180;  // Only allow refresh after 3 minutes.
+        ParkingModel                *m_prototype;
+        QList<ParkingModel*>        m_parkings;
+        DataSource                  *m_dataSource;
+        FavoritesStorage            *m_fav;
+        QDateTime                   m_lastSuccessfulRefresh;
+        ParkingListModel::Status    m_status;
 };
 
 #endif // PARKINGLISTMODEL_H

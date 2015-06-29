@@ -107,3 +107,33 @@ function isOpen(status)
 {
     return status === "status_1";
 }
+
+/**
+ * Returns an error string depending on the given error code.
+ *
+ * @param   int err     Error code
+ *
+ * @return  string
+ */
+function getErrorHintText(err)
+{
+    var r = "";
+
+    switch(err)
+    {
+        case 1: // ParkingModel.NoError
+            r = qsTr("Pull to refresh.");
+            break;
+        case 2: // ParkingModel.NetworkError
+            r = qsTr("The source of data can't be reached.");
+            break;
+        case 3: // ParkingModel.JsonError
+            r = qsTr("The data returned by the webservice can't be used.");
+            break;
+        default:
+            r = qsTr("Unknown cause.");
+            break;
+    }
+
+    return r;
+}
