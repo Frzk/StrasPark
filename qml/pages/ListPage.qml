@@ -78,14 +78,16 @@ Page {
 
             MenuLabel {
                 text: parkingModel.status === ParkingModel.Refreshing ? qsTr("Updating...") :
-                                                                            (Date.parse(parkingModel.lastUpdate) ?
-                                                                                qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
-                                                                                qsTr("No data."))
+                          parkingModel.status === ParkingModel.NoError && Date.parse(parkingModel.lastUpdate) ?
+                              qsTr("Updated %1").arg(Qt.formatDateTime(parkingModel.lastUpdate, Qt.DefaultLocaleShortDate)) :
+                              qsTr("No data.")
             }
         }
 
         ViewPlaceholder {
-            enabled: parkingModel.status !== ParkingModel.Refreshing && parkingModel.status !== ParkingModel.NoError
+            enabled: (parkingModel.status === ParkingModel.NetworkError) ||
+                     (parkingModel.status === ParkingModel.JsonError) ||
+                     (parkingModel.status === ParkingModel.NoError && view.count === 0)
             hintText: Helpers.getErrorHintText(parkingModel.status)
             text: parkingModel.status !== ParkingModel.NoError ? qsTr("An error occured :(") : qsTr("No data !")
         }
